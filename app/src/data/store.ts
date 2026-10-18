@@ -20,7 +20,7 @@ const seed = (): Booking[] => {
   const t = today();
   return [
     { id: 'RK-M4T2', member: 'bapuji', guest: 'Mehta family', phone: '9820011111', count: 4, start: add(t, 4), end: add(t, 7) },
-    { id: 'RK-P8R1', member: 'surbhi', guest: 'Priya & Rohan', phone: '9820022222', count: 2, start: add(t, 6), end: add(t, 9) },
+    { id: 'RK-P8R1', member: 'surbhi', guest: 'Priya & Rohan', phone: '9820022222', count: 2, start: add(t, 7), end: add(t, 9) },
     { id: 'RK-A3F9', member: 'arun', guest: 'Sharma ji & family', phone: '9820033333', count: 3, start: add(t, 12), end: add(t, 15) },
     { id: 'RK-K7S5', member: 'anuj', guest: 'Kartik Sharma', phone: '9820044444', count: 1, start: add(t, 19), end: add(t, 22) },
     { id: 'RK-G2K6', member: 'ma', guest: 'Kirtan group, Pune', phone: '9820055555', count: 5, start: add(t, 27), end: add(t, 33) },

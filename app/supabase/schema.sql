@@ -12,6 +12,9 @@
 --   • Only the six numbers in sjk_members can see or change bookings. Any
 --     other account in this project (e.g. a GRA customer) sees nothing.
 --   • A member can add stays under their own name and remove only their own.
+--   • First come, first served: two stays can never share a night. The
+--     database itself refuses the second one, even if both are confirmed
+--     at the same moment.
 --   • Guests are not signed in. They can only call sjk_guest_stay(), which
 --     returns one stay by its id, without any mobile numbers.
 -- ══════════════════════════════════════════════════════════════════════════
@@ -88,6 +91,17 @@ create table if not exists public.sjk_bookings (
   check (end_date > start_date)
 );
 alter table public.sjk_bookings enable row level security;
+
+-- First come, first served. Check-out day may equal the next check-in day.
+-- If this step fails with "could not create exclusion constraint", two
+-- existing stays overlap: delete one in Table Editor → sjk_bookings, re-run.
+do $$
+begin
+  if not exists (select 1 from pg_constraint where conname = 'sjk_bookings_no_overlap') then
+    alter table public.sjk_bookings add constraint sjk_bookings_no_overlap
+      exclude using gist (daterange(start_date, end_date) with &&);
+  end if;
+end $$;
 
 drop policy if exists "family reads bookings" on public.sjk_bookings;
 create policy "family reads bookings"

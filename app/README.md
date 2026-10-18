@@ -42,6 +42,7 @@ The app uses the **GRA Moissanite Supabase project**, on purpose: the family reu
 
 - Only the six family numbers can sign in or see bookings.
 - Each member can add stays under their own name and remove only their own.
+- **First come, first served:** once a date is booked, nobody else can book it. The app politely declines, and the database refuses it too, even if two people confirm at the same moment.
 - Guests aren't signed in. A guest link can read only its own stay, without any phone numbers.
 
 **One-time setup:** open Supabase → **SQL Editor** → **New query**, paste all of `supabase/schema.sql`, and click **Run**. Run it again whenever a family member's number changes; it is safe to run more than once.
@@ -56,10 +57,9 @@ The SMS code is 6 digits, because the length is a project-wide setting shared wi
 |---|---|
 | Shared calendar, live on every family phone | ✅ |
 | SMS sign-in, family numbers only | ✅ |
-| Blocking and unblocking, overlap warning | ✅ |
+| Blocking and unblocking, first come first served | ✅ |
 | Guest link | ✅ Works on the guest's own phone. It stops working once the stay is unblocked. |
 | "Send on WhatsApp" to the guest | ✅ Opens WhatsApp with the message ready |
-| WhatsApp alert to the other member on overlap | ✅ One tap opens WhatsApp to that member with the message ready |
 
 ## Content still to confirm (from the design chat)
 

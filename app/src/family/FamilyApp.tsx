@@ -7,12 +7,11 @@ import SignIn from './SignIn';
 import StayInfo, { type Section } from '../components/StayInfo';
 import { AppHeader, useToast } from '../components/Phone';
 import { auth, bookingStore, useBookings } from '../data/store';
-import { copyText, guestLink, guestWhatsApp, whatsAppTo } from '../data/links';
+import { copyText, guestLink, guestWhatsApp } from '../data/links';
 import { byStart, DOW, fmt, fmtPhone, MB, newId, nightsOf, overlap, parse, people, stayText, today, type Booking, type MemberId } from '../data/model';
 
 type Tab = 'cal' | 'mine' | 'info';
-interface Notice { member: MemberId; name: string; msg: string }
-type Sheet = { type: 'day'; date: string } | { type: 'form' } | { type: 'done'; id: string; notified: Notice[]; fresh?: boolean } | null;
+type Sheet = { type: 'day'; date: string } | { type: 'form' } | { type: 'done'; id: string; fresh?: boolean } | null;
 
 const INFO: [Section, string][] = [['stay', 'Address & map'], ['temple', 'Darshan'], ['explore', 'Things to do'], ['ebike', 'Transport'], ['checkout', 'Check-out'], ['sos', 'Emergency']];
 const btn = (extra: React.CSSProperties = {}): React.CSSProperties => ({ height: 44, borderRadius: 'var(--r-md)', fontWeight: 600, fontSize: 14, cursor: 'pointer', ...extra });
@@ -57,34 +56,48 @@ export default function FamilyApp({ labels, onPreviewGuest }: Props) {
   const T = today();
 
   const openDay = (d: string) => { setSheet({ type: 'day', date: d }); setConfirmDel(null); };
-  const openDone = (id: string, notified: Notice[] = []) => { setSheet({ type: 'done', id, notified }); setCopied(false); setSelecting(false); };
+  const openDone = (id: string) => { setSheet({ type: 'done', id }); setCopied(false); setSelecting(false); };
   const startBlock = (from: string | null = null) => { setTab('cal'); setSelecting(true); setSS(from); setSE(null); setSheet(null); };
   const cancelSel = () => { setSelecting(false); setSS(null); setSE(null); };
   const signOut = () => { auth.signOut(); setMe(null); setSheet(null); setSelecting(false); };
 
+  // First come, first served: dates someone has already booked can't be chosen.
+  const bookedOn = (d: string) => B.find(b => b.start <= d && d < b.end);
+  const clashWith = (s: string, e: string) => B.find(b => overlap(b, s, e));
+  const decline = (b: Booking) => toast(`Sorry 🙏 ${fmt(b.start)} → ${fmt(b.end)} is already booked by ${b.member === me ? 'you' : MB[b.member].name} (${b.guest}). Please choose other dates.`);
+  const raced = () => { setSheet(null); cancelSel(); toast('Sorry 🙏 someone has just booked these dates. Please choose other dates.'); };
+
   const onDay = (d: string) => {
     if (!selecting) return openDay(d);
     if (d < T) return toast('Pick a date from today onwards');
-    if (!sS || sE || d <= sS) { setSS(d); setSE(null); } else setSE(d);
+    if (!sS || sE || d <= sS) {
+      const b = bookedOn(d);
+      if (b) return decline(b);
+      setSS(d); setSE(null);
+    } else {
+      const b = clashWith(sS, d);
+      if (b) return decline(b);
+      setSE(d);
+    }
   };
 
   const nSel = sS && sE ? nightsOf(sS, sE) : 0;
-  const others = sS && sE ? B.filter(b => b.member !== me && overlap(b, sS, sE)) : [];
   const phoneOk = /^\d{10}$/.test(form.phone), guestOk = form.guest.trim().length > 0;
 
   const confirm = async () => {
     if (!(guestOk && phoneOk) || !sS || !sE) return setTouched(true);
     if (saving) return;
+    if (clashWith(sS, sE)) return raced();
     const nb: Booking = { id: newId(), member: me, guest: form.guest.trim(), phone: form.phone, count: form.count, start: sS, end: sE };
-    const range = fmt(sS) + ' → ' + fmt(sE);
-    const notified = [...new Set(others.map(b => b.member))].map(mid => ({
-      member: mid, name: MB[mid].name,
-      msg: `Hare Krishna ${MB[mid].name}. ${meM.name} has also blocked Shri Ji Kunj for ${range}. ${nb.guest} (${people(nb.count)}) will be joining your stay.`,
-    }));
     setSaving(true);
-    try { await bookingStore.addBooking(nb); } catch { setSaving(false); return toast("Couldn't save. Check your internet and try again."); }
+    try { await bookingStore.addBooking(nb); } catch (e) {
+      setSaving(false);
+      // The database refuses overlapping stays, e.g. when two people confirm at the same moment.
+      if ((e as { code?: string }).code === '23P01') return raced();
+      return toast("Couldn't save. Check your internet and try again.");
+    }
     setSaving(false);
-    setSheet({ type: 'done', id: nb.id, notified, fresh: true });
+    setSheet({ type: 'done', id: nb.id, fresh: true });
     setSelecting(false); setSS(null); setSE(null); setCopied(false);
   };
 
@@ -178,7 +191,7 @@ export default function FamilyApp({ labels, onPreviewGuest }: Props) {
             <div style={{ alignSelf: 'center', width: 40, height: 5, borderRadius: 3, background: 'var(--border)' }} />
             {sheet.type === 'day' && daySheet(sheet.date)}
             {sheet.type === 'form' && sS && sE && formSheet(sS, sE)}
-            {sheet.type === 'done' && doneSheet(sheet.id, sheet.notified, !!sheet.fresh)}
+            {sheet.type === 'done' && doneSheet(sheet.id, !!sheet.fresh)}
           </div>
         </div>
       )}
@@ -223,9 +236,9 @@ export default function FamilyApp({ labels, onPreviewGuest }: Props) {
             </div>
           );
         })}
-        <button onClick={() => { if (d < T) return toast('This date has passed'); startBlock(d); }} style={primaryBtn()}>
-          {stays.length ? 'Also block from ' : 'Block from '}{fmt(d)}
-        </button>
+        {stays.length
+          ? <div style={{ fontSize: 13, color: 'var(--ink-3)', textAlign: 'center' }}>Booked on a first come, first served basis.</div>
+          : <button onClick={() => { if (d < T) return toast('This date has passed'); startBlock(d); }} style={primaryBtn()}>Block from {fmt(d)}</button>}
       </div>
     );
   }
@@ -238,11 +251,6 @@ export default function FamilyApp({ labels, onPreviewGuest }: Props) {
           <span className="serif" style={{ fontSize: 24 }}>{fmt(start)} → {fmt(end)}</span>
           <span style={{ fontSize: 13, color: 'var(--ink-3)' }}>{nSel + (nSel > 1 ? ' nights' : ' night')} · check-out {DOW[parse(end).getDay()]}</span>
         </div>
-        {others.map(b => (
-          <div key={b.id} style={{ background: 'var(--amber-soft)', borderRadius: 'var(--r-md)', padding: '12px 14px', fontSize: 14, lineHeight: 1.45 }}>
-            <span style={{ fontWeight: 600 }}>Shared stay.</span> {MB[b.member].name}'s guests ({b.guest}, {b.count}) are staying {fmt(b.start > start ? b.start : start)} – {fmt(b.end < end ? b.end : end)}. {MB[b.member].name} will get a WhatsApp message.
-          </div>
-        ))}
         <div className="col" style={{ gap: 6 }}>
           <label htmlFor="gname" style={label}>Guest name</label>
           <input id="gname" value={form.guest} onChange={e => setForm({ ...form, guest: e.target.value })} placeholder="e.g. Mehta family"
@@ -270,7 +278,7 @@ export default function FamilyApp({ labels, onPreviewGuest }: Props) {
     );
   }
 
-  function doneSheet(id: string, notified: Notice[], fresh: boolean) {
+  function doneSheet(id: string, fresh: boolean) {
     const b = B.find(x => x.id === id);
     if (!b) return null;
     const link = guestLink(b);
@@ -279,7 +287,7 @@ export default function FamilyApp({ labels, onPreviewGuest }: Props) {
         <div className="row" style={{ gap: 12 }}>
           <span style={{ width: 44, height: 44, borderRadius: '50%', background: 'var(--emerald)', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22, flex: 'none' }}>✓</span>
           <span className="col">
-            <span className="serif" style={{ fontSize: 22 }}>{notified.length || fresh ? 'Dates blocked' : 'Guest link'}</span>
+            <span className="serif" style={{ fontSize: 22 }}>{fresh ? 'Dates blocked' : 'Guest link'}</span>
             <span style={{ fontSize: 14, color: 'var(--ink-3)' }}>{stayText(b)} · {people(b.count)}</span>
           </span>
         </div>
@@ -296,13 +304,6 @@ export default function FamilyApp({ labels, onPreviewGuest }: Props) {
           if (onPreviewGuest) { onPreviewGuest(b); toast('Guest app now shows ' + b.guest + "'s stay →"); }
           else window.open(link, '_blank');
         }} style={btn({ height: 48, border: '1px solid var(--border-strong)', background: 'var(--surface-2)', color: 'var(--ink)', fontSize: 15 })}>Preview guest app →</button>
-        {notified.map(n => (
-          <div key={n.name} className="col" style={{ gap: 6, borderTop: '1px solid var(--divider)', paddingTop: 12 }}>
-            <span className="eyebrow">Let {n.name} know</span>
-            <div style={{ alignSelf: 'flex-start', maxWidth: '92%', background: 'var(--emerald-soft)', borderRadius: '4px 14px 14px 14px', padding: '10px 12px', fontSize: 14, lineHeight: 1.45 }}>{n.msg}</div>
-            <a href={whatsAppTo(MB[n.member].phone, n.msg)} target="_blank" rel="noreferrer" className="btn" style={{ height: 46, fontSize: 15, background: 'var(--surface-2)', border: '1px solid var(--emerald)', color: 'var(--emerald)' }}>Send to {n.name} on WhatsApp</a>
-          </div>
-        ))}
       </div>
     );
   }

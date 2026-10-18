@@ -18,7 +18,7 @@ export function useToast() {
   const show = (m: string) => {
     setMsg(m);
     clearTimeout(t.current);
-    t.current = window.setTimeout(() => setMsg(null), 2600);
+    t.current = window.setTimeout(() => setMsg(null), 4000);
   };
   const node = msg ? <div className="toast" role="status">{msg}</div> : null;
   return [show, node] as const;
