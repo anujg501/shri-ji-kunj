@@ -43,7 +43,7 @@ Once it is live, family members open the address on their phone and choose **Add
 | "Send on WhatsApp" to guest | ✅ Opens WhatsApp with the message ready to send |
 | **Shared calendar across family phones** | ⚠️ Not yet. Bookings are saved on each phone separately until a server is connected. |
 | OTP by SMS | ⚠️ Simulated: any 4 digits work |
-| Automatic WhatsApp to the other member on overlap | ⚠️ Shown on screen, not sent |
+| WhatsApp alert to the other member on overlap | ✅ One tap opens WhatsApp with the message ready. Add members' numbers to `WHATSAPP` in `model.ts`; without a number, WhatsApp asks who to send it to. |
 
 ### Next step: make the calendar shared
 
@@ -52,12 +52,11 @@ Connect `src/data/store.ts` to a hosted database such as **Supabase** (free tier
 1. Create a `bookings` table with the fields from the `Booking` type in `model.ts`.
 2. In `store.ts`, load bookings from the table and subscribe to realtime changes, instead of using `localStorage`.
 3. Turn on Supabase phone sign-in, with an SMS provider such as Twilio or MSG91, to replace the simulated OTP.
-4. For automatic WhatsApp messages, add a small server function that calls the WhatsApp Business API (through Twilio or Gupshup) when a new booking overlaps an existing one.
 
 ## Content still to confirm (from the design chat)
 
 - Darshan timings are drafts.
 - The e-bike charging card still has the designer's draft steps.
 - The GEV reception number is missing.
-- Family members' WhatsApp numbers are needed for overlap alerts.
+- Family members' WhatsApp numbers (only Anuj prabhu's is set) for overlap alerts.
 - The door code is visible to anyone who has a guest link. Update `StayInfo.tsx` whenever the code changes.

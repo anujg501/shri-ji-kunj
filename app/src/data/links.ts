@@ -27,8 +27,12 @@ export function decodeStay(id: string, d: string | null): GuestStay | null {
 export function guestWhatsApp(b: Booking) {
   const link = guestLink(b);
   const txt = `Hare Krishna ${b.guest}! Your stay at Shri Ji Kunj, Goverdhan Eco Village is confirmed for ${stayText(b)}. Address, map, darshan timings and e-bike guide: ${link}`;
-  return 'https://wa.me/91' + b.phone + '?text=' + encodeURIComponent(txt);
+  return whatsAppTo(b.phone, txt);
 }
+
+/** Opens WhatsApp with `text` ready to send, to `phone` if known, else to a chosen contact. */
+export const whatsAppTo = (phone: string | undefined, text: string) =>
+  (phone ? 'https://wa.me/91' + phone : 'https://wa.me/') + '?text=' + encodeURIComponent(text);
 
 export function copyText(t: string) {
   try { navigator.clipboard.writeText(t); } catch { /* clipboard unavailable */ }

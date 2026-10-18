@@ -7,11 +7,11 @@ import SignIn from './SignIn';
 import StayInfo, { type Section } from '../components/StayInfo';
 import { AppHeader, useToast } from '../components/Phone';
 import { bookingStore, session, useBookings } from '../data/store';
-import { copyText, guestLink, guestWhatsApp } from '../data/links';
-import { byStart, DOW, fmt, fmtPhone, MB, newId, nightsOf, overlap, parse, people, stayText, today, type Booking, type MemberId } from '../data/model';
+import { copyText, guestLink, guestWhatsApp, whatsAppTo } from '../data/links';
+import { byStart, DOW, fmt, fmtPhone, MB, newId, nightsOf, overlap, parse, people, stayText, today, WHATSAPP, type Booking, type MemberId } from '../data/model';
 
 type Tab = 'cal' | 'mine' | 'info';
-interface Notice { name: string; msg: string }
+interface Notice { member: MemberId; name: string; msg: string }
 type Sheet = { type: 'day'; date: string } | { type: 'form' } | { type: 'done'; id: string; notified: Notice[]; fresh?: boolean } | null;
 
 const INFO: [Section, string][] = [['stay', 'Address & map'], ['temple', 'Darshan'], ['explore', 'Things to do'], ['ebike', 'Transport'], ['checkout', 'Check-out'], ['sos', 'Emergency']];
@@ -71,7 +71,7 @@ export default function FamilyApp({ labels, onPreviewGuest }: Props) {
     const nb: Booking = { id: newId(), member: me, guest: form.guest.trim(), phone: form.phone, count: form.count, start: sS, end: sE };
     const range = fmt(sS) + ' → ' + fmt(sE);
     const notified = [...new Set(others.map(b => b.member))].map(mid => ({
-      name: MB[mid].name,
+      member: mid, name: MB[mid].name,
       msg: `Hare Krishna ${MB[mid].name}. ${meM.name} has also blocked Shri Ji Kunj for ${range}. ${nb.guest} (${people(nb.count)}) will be joining your stay.`,
     }));
     bookingStore.addBooking(nb);
@@ -288,8 +288,9 @@ export default function FamilyApp({ labels, onPreviewGuest }: Props) {
         }} style={btn({ height: 48, border: '1px solid var(--border-strong)', background: 'var(--surface-2)', color: 'var(--ink)', fontSize: 15 })}>Preview guest app →</button>
         {notified.map(n => (
           <div key={n.name} className="col" style={{ gap: 6, borderTop: '1px solid var(--divider)', paddingTop: 12 }}>
-            <span className="eyebrow">WhatsApp sent to {n.name}</span>
+            <span className="eyebrow">Let {n.name} know</span>
             <div style={{ alignSelf: 'flex-start', maxWidth: '92%', background: 'var(--emerald-soft)', borderRadius: '4px 14px 14px 14px', padding: '10px 12px', fontSize: 14, lineHeight: 1.45 }}>{n.msg}</div>
+            <a href={whatsAppTo(WHATSAPP[n.member], n.msg)} target="_blank" rel="noreferrer" className="btn" style={{ height: 46, fontSize: 15, background: 'var(--surface-2)', border: '1px solid var(--emerald)', color: 'var(--emerald)' }}>Send to {n.name} on WhatsApp</a>
           </div>
         ))}
       </div>

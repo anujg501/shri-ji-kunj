@@ -23,6 +23,9 @@ export const MB = Object.fromEntries(MEMBERS.map(m => [m.id, m])) as Record<Memb
 /** Numbers that skip the "Who is this?" step because they are already linked to a member. */
 export const KNOWN_PHONES: Record<string, MemberId> = { '7710065480': 'anuj' };
 
+/** Members' WhatsApp numbers for overlap alerts. Without a number, WhatsApp asks who to send to. */
+export const WHATSAPP: Partial<Record<MemberId, string>> = { anuj: '7710065480' };
+
 /** A stay. `start` is check-in, `end` is check-out (exclusive): nights are start..end-1. */
 export interface Booking {
   id: string;
