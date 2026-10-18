@@ -1,6 +1,8 @@
 # Shri Ji Kunj — family & guest app
 
 A mobile web app for booking the flat at Goverdhan Eco Village (F 11-103, Goverdhan Kunj).
+**Live at https://shrijikunj.netlify.app** (Netlify project `shrijikunj`, Gra Moissanite Team).
+
 It is built from the Claude Design handoff in `../project/Shri Radha Kunj App.dc.html`.
 It can be added to a phone's home screen and then works like an installed app.
 
