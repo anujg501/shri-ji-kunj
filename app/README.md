@@ -23,8 +23,7 @@ npm run build      # production files go to app/dist/
 
 ## Put it online
 
-Upload `app/dist/` to any static host: Netlify Drop, Vercel, Cloudflare Pages or GitHub Pages.
-The app uses `#` addresses, so no server setup is needed.
+The app is hosted on **Netlify**, the same account as the gra-moissanite site. `netlify.toml` at the repository root holds all the build settings: in Netlify choose **Add new site → Import an existing project → GitHub → shri-ji-kunj** and click **Deploy**. Every push to `main` then updates the live app automatically.
 Once it is live, family members open the address on their phone and choose **Add to Home Screen**.
 
 ## Where things live
