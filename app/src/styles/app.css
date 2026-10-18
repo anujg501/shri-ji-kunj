@@ -1,0 +1,72 @@
+@import './tokens.css';
+
+html, body, #root { height: 100%; }
+body { margin: 0; background: var(--paper); font-family: var(--font-sans); color: var(--ink); }
+a { color: var(--emerald); }
+a:hover { color: var(--emerald-ink); }
+input, select, button { font-family: var(--font-sans); }
+button { -webkit-tap-highlight-color: transparent; }
+
+/* ---------- Phone shell ----------
+   On a phone the app fills the screen. On a wider screen it sits in a 390×844 device
+   frame, matching the design canvas. */
+.shell { height: 100%; display: flex; justify-content: center; }
+.screen { width: 100%; height: 100%; background: var(--paper); position: relative; display: flex; flex-direction: column; overflow: hidden; }
+.statusbar { display: none; }
+@supports (padding-top: env(safe-area-inset-top)) { .screen { padding-top: env(safe-area-inset-top); } }
+
+@media (min-width: 520px) {
+  body { background: var(--paper-2); }
+  .shell { align-items: center; padding: 24px; height: auto; min-height: 100%; box-sizing: border-box; }
+  .frame { width: 390px; height: 844px; flex: none; background: var(--ink); border-radius: 56px; padding: 11px; box-shadow: var(--shadow-lg); box-sizing: border-box; }
+  .screen { border-radius: 46px; padding-top: 0; }
+  .statusbar { height: 46px; flex: none; display: flex; align-items: center; justify-content: space-between; padding: 0 30px; font: 600 15px var(--font-sans); }
+  .statusbar i { width: 26px; height: 12px; border: 1.5px solid var(--ink); border-radius: 4px; }
+}
+@media (max-width: 519px) { .frame { width: 100%; height: 100%; } }
+
+/* ---------- Shared building blocks ---------- */
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg); }
+.eyebrow { font-size: 12px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-3); }
+.serif { font-family: var(--font-serif); font-weight: 600; }
+.mono { font-family: var(--font-mono); }
+.col { display: flex; flex-direction: column; }
+.row { display: flex; align-items: center; }
+.scroll { flex: 1; overflow: auto; min-height: 0; -webkit-overflow-scrolling: touch; }
+
+.btn { height: 44px; border-radius: var(--r-md); font-weight: 600; font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; text-decoration: none; border: 0; box-sizing: border-box; }
+.btn-primary { background: var(--emerald); color: #fff; }
+.btn-primary:hover { color: #fff; }
+.btn-ghost { border: 1px solid var(--border-strong); background: var(--surface-2); color: var(--ink); }
+.btn-copy { height: 38px; padding: 0 14px; border-radius: var(--r-sm); border: 1px solid var(--border-strong); background: var(--surface-2); font: 600 13px var(--font-sans); color: var(--ink); cursor: pointer; }
+
+.steps { display: grid; grid-template-columns: 24px 1fr; gap: 10px; font-size: 15px; line-height: 1.45; }
+.steps > .n { font-family: var(--font-mono); color: var(--emerald); font-weight: 500; }
+
+.field { display: flex; align-items: center; border: 1px solid var(--border-strong); border-radius: var(--r-md); background: var(--surface-2); padding: 0 14px; gap: 10px; box-sizing: border-box; }
+.field input { flex: 1; border: 0; outline: 0; background: transparent; color: var(--ink); min-width: 0; }
+.field:focus-within, .otp:focus { box-shadow: var(--ring); }
+
+.tabbtn { border: 0; background: none; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; font-weight: 600; padding: 0; white-space: nowrap; }
+
+.sheet-backdrop { position: absolute; inset: 0; background: rgba(21,19,15,.38); display: flex; flex-direction: column; justify-content: flex-end; z-index: 5; animation: fade .18s ease-out; }
+.sheet { background: var(--surface); border-radius: 22px 22px 0 0; max-height: 88%; overflow: auto; padding: 10px 20px 32px; display: flex; flex-direction: column; gap: 14px; animation: rise .22s ease-out; }
+.toast { position: absolute; top: 56px; left: 16px; right: 16px; background: var(--ink); color: var(--paper); border-radius: var(--r-md); padding: 12px 14px; font-size: 14px; font-weight: 500; z-index: 10; box-shadow: var(--shadow-md); animation: fade .18s ease-out; }
+@keyframes fade { from { opacity: 0; } }
+@keyframes rise { from { transform: translateY(40px); opacity: .6; } }
+
+/* ---------- Calendar ---------- */
+.cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); }
+.cal-dow { text-align: center; padding: 8px 0; font-size: 11px; font-weight: 600; color: var(--ink-3); }
+.cal-cell { height: 66px; border: 0; padding: 5px 0 0; display: flex; flex-direction: column; gap: 3px; cursor: pointer; min-width: 0; background: var(--surface); }
+.cal-num { align-self: center; width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; }
+.cal-mark { height: 14px; color: #fff; font-size: 9px; font-weight: 600; line-height: 14px; padding-left: 3px; text-align: left; white-space: nowrap; overflow: hidden; }
+
+/* ---------- Side-by-side preview (#/preview) ---------- */
+.preview { padding: 40px 48px 64px; display: flex; flex-direction: column; gap: 28px; background: var(--paper-2); min-height: 100%; box-sizing: border-box; }
+.preview .frame { width: 390px; height: 844px; flex: none; background: var(--ink); border-radius: 56px; padding: 11px; box-shadow: var(--shadow-lg); box-sizing: border-box; }
+.preview .screen { border-radius: 46px; padding-top: 0; }
+.preview .statusbar { height: 46px; flex: none; display: flex; align-items: center; justify-content: space-between; padding: 0 30px; font: 600 15px var(--font-sans); }
+.preview .statusbar i { width: 26px; height: 12px; border: 1.5px solid var(--ink); border-radius: 4px; }
+.badge { font: 600 11px var(--font-mono); padding: 3px 7px; background: var(--ink); color: var(--paper); border-radius: 4px; }
+@media (max-width: 519px) { .preview { padding: 20px 12px; } .preview .frame { width: 100%; } }
