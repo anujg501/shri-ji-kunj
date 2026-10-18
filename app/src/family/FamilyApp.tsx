@@ -40,6 +40,7 @@ export default function FamilyApp({ labels, onPreviewGuest }: Props) {
   const [touched, setTouched] = useState(false);
   const [copied, setCopied] = useState(false);
   const [confirmDel, setConfirmDel] = useState<string | null>(null);
+  const [confirmClear, setConfirmClear] = useState(false);
   const [saving, setSaving] = useState(false);
 
   useEffect(() => { auth.restore().then(setMe); }, []);
@@ -102,12 +103,18 @@ export default function FamilyApp({ labels, onPreviewGuest }: Props) {
   };
 
   const navBtn = (t: Tab, text: string, icon: React.ReactNode) => (
-    <button className="tabbtn" onClick={() => { setTab(t); if (t === 'mine') setSelecting(false); }} style={{ height: 54, gap: 3, fontSize: 12, color: tab === t ? 'var(--emerald)' : 'var(--ink-3)' }}>
+    <button className="tabbtn" onClick={() => { setTab(t); setConfirmClear(false); if (t === 'mine') setSelecting(false); }} style={{ height: 54, gap: 3, fontSize: 12, color: tab === t ? 'var(--emerald)' : 'var(--ink-3)' }}>
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">{icon}</svg>{text}
     </button>
   );
 
   const myStays = B.filter(b => b.member === me && b.end >= T).sort(byStart);
+  const isAdmin = !!meM.admin;
+  const clearAll = () => {
+    if (!confirmClear) return setConfirmClear(true);
+    setConfirmClear(false);
+    bookingStore.clearAll().then(() => toast('All bookings cleared. The calendar is empty for everyone.'), () => toast("Couldn't clear the calendar. Check your internet and try again."));
+  };
 
   return (
     <>
@@ -142,6 +149,15 @@ export default function FamilyApp({ labels, onPreviewGuest }: Props) {
               ))}
               {!myStays.length && <div style={{ padding: '24px 16px', textAlign: 'center', fontSize: 14, color: 'var(--ink-3)', border: '1px dashed var(--border)', borderRadius: 'var(--r-lg)' }}>You have no upcoming stays.</div>}
               <button onClick={() => startBlock()} style={btn({ height: 52, border: '1.5px dashed var(--emerald)', background: 'transparent', color: 'var(--emerald)', fontSize: 15, marginTop: 6 })}>+ Block new dates</button>
+              {isAdmin && (
+                <div className="col" style={{ gap: 8, marginTop: 18, paddingTop: 16, borderTop: '1px solid var(--divider)' }}>
+                  <span className="eyebrow">Admin</span>
+                  <span style={{ fontSize: 13, color: 'var(--ink-3)' }}>You can remove anyone's booking from its day on the calendar, or clear every booking here. Guest links for removed stays stop working.</span>
+                  <button onClick={clearAll} disabled={!B.length} style={btn({ height: 48, border: '1px solid var(--ruby)', background: confirmClear ? 'var(--ruby)' : 'var(--surface-2)', color: confirmClear ? '#fff' : 'var(--ruby)', opacity: B.length ? 1 : 0.5 })}>
+                    {!B.length ? 'Calendar is empty' : confirmClear ? `Tap again to delete all ${B.length} bookings` : 'Clear all bookings'}
+                  </button>
+                </div>
+              )}
             </div>
           )}
 
@@ -223,14 +239,14 @@ export default function FamilyApp({ labels, onPreviewGuest }: Props) {
                 <span style={{ color: 'var(--ink-3)' }}>People</span><span style={{ fontWeight: 500 }}>{b.count}</span>
                 <span style={{ color: 'var(--ink-3)' }}>Mobile</span><a href={'tel:+91' + b.phone} className="mono" style={{ color: 'var(--ink)', textDecoration: 'none' }}>+91 {fmtPhone(b.phone)}</a>
               </div>
-              {b.member === me && (
+              {(b.member === me || isAdmin) && (
                 <div style={{ display: 'flex', gap: 8 }}>
                   <button onClick={() => openDone(b.id)} style={btn({ flex: 1, border: 0, background: 'var(--emerald)', color: '#fff' })}>Guest link</button>
                   <button onClick={() => {
                     if (!conf) return setConfirmDel(b.id);
                     setConfirmDel(null);
-                    bookingStore.remove(b.id).then(() => toast('Dates released — now available to everyone'), () => toast("Couldn't unblock. Check your internet and try again."));
-                  }} style={btn({ flex: 1, border: '1px solid var(--ruby)', background: conf ? 'var(--ruby)' : 'var(--surface-2)', color: conf ? '#fff' : 'var(--ruby)' })}>{conf ? 'Tap to confirm' : 'Unblock'}</button>
+                    bookingStore.remove(b.id).then(() => toast(b.member === me ? 'Dates released — now available to everyone' : `Removed ${MB[b.member].name}'s booking — dates now available`), () => toast("Couldn't unblock. Check your internet and try again."));
+                  }} style={btn({ flex: 1, border: '1px solid var(--ruby)', background: conf ? 'var(--ruby)' : 'var(--surface-2)', color: conf ? '#fff' : 'var(--ruby)' })}>{conf ? 'Tap to confirm' : b.member === me ? 'Unblock' : 'Remove'}</button>
                 </div>
               )}
             </div>

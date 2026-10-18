@@ -85,6 +85,15 @@ export const bookingStore = {
     if (error) { setAll(before); throw error; }
   },
 
+  /** Admin only: removes every stay. */
+  async clearAll() {
+    const before = bookings;
+    setAll([]);
+    if (!db) return;
+    const { error } = await db.rpc('sjk_clear_bookings');
+    if (error) { setAll(before); throw error; }
+  },
+
   async remove(id: string) {
     const before = bookings;
     setAll(bookings.filter(b => b.id !== id));

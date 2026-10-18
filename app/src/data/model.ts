@@ -10,6 +10,8 @@ export interface Member {
   ini: string;
   /** 10-digit mobile. Must match supabase/schema.sql, which is what sign-in checks. */
   phone: string;
+  /** Can remove anyone's stay and clear the calendar. The database enforces this (is_admin in schema.sql). */
+  admin?: boolean;
 }
 
 export const MEMBERS: Member[] = [
@@ -18,7 +20,7 @@ export const MEMBERS: Member[] = [
   { id: 'arun', name: 'Arun prabhu', full: 'Arun prabhu', color: '#1E3A8A', ini: 'Ar', phone: '9987664399' },
   { id: 'surbhi', name: 'Surbhi mataji', full: 'Radha Devi Dasi', color: '#B7791F', ini: 'Su', phone: '7738788848' },
   { id: 'swapnil', name: 'Swapnil mataji', full: 'Swapnil mataji', color: '#6B3F73', ini: 'Sw', phone: '9929165555' },
-  { id: 'anuj', name: 'Anuj prabhu', full: 'Anuj prabhu', color: '#4A5F2C', ini: 'An', phone: '7710065480' },
+  { id: 'anuj', name: 'Anuj prabhu', full: 'Anuj prabhu', color: '#4A5F2C', ini: 'An', phone: '7710065480', admin: true },
 ];
 export const MB = Object.fromEntries(MEMBERS.map(m => [m.id, m])) as Record<MemberId, Member>;
 

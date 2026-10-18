@@ -12,6 +12,7 @@
 --   • Only the six numbers in sjk_members can see or change bookings. Any
 --     other account in this project (e.g. a GRA customer) sees nothing.
 --   • A member can add stays under their own name and remove only their own.
+--     The admin (Anuj prabhu) can also remove anyone's stay or clear them all.
 --   • First come, first served: two stays can never share a night. The
 --     database itself refuses the second one, even if both are confirmed
 --     at the same moment.
@@ -41,6 +42,11 @@ insert into public.sjk_members (id, name, phone) values
   ('anuj',    'Anuj prabhu',    '7710065480')
 on conflict (id) do update set name = excluded.name, phone = excluded.phone;
 
+-- The admin can remove any stay and clear the calendar. Must match `admin`
+-- in src/data/model.ts, which only decides what the app shows.
+alter table public.sjk_members add column if not exists is_admin boolean not null default false;
+update public.sjk_members set is_admin = (id = 'anuj');
+
 
 -- ── who is signed in ──────────────────────────────────────────────────────
 -- The member id of the current user, or null if their number is not family.
@@ -58,6 +64,16 @@ as $$
 $$;
 revoke all on function public.sjk_my_member() from public, anon;
 grant execute on function public.sjk_my_member() to authenticated;
+
+create or replace function public.sjk_is_admin()
+returns boolean
+language sql stable security definer
+set search_path = public
+as $$
+  select coalesce((select is_admin from public.sjk_members where id = public.sjk_my_member()), false);
+$$;
+revoke all on function public.sjk_is_admin() from public, anon;
+grant execute on function public.sjk_is_admin() to authenticated;
 
 -- Checked before an OTP is sent, so an SMS is never spent on a stranger's
 -- number. Answers only yes or no.
@@ -116,7 +132,25 @@ create policy "family adds own bookings"
 drop policy if exists "family removes own bookings" on public.sjk_bookings;
 create policy "family removes own bookings"
   on public.sjk_bookings for delete to authenticated
-  using (member = public.sjk_my_member());
+  using (member = public.sjk_my_member() or public.sjk_is_admin());
+
+-- Admin only: empty the calendar. Returns how many stays were removed.
+create or replace function public.sjk_clear_bookings()
+returns integer
+language plpgsql security definer
+set search_path = public
+as $$
+declare n integer;
+begin
+  if not public.sjk_is_admin() then
+    raise exception 'Only the admin can clear the calendar' using errcode = '42501';
+  end if;
+  delete from public.sjk_bookings where true;
+  get diagnostics n = row_count;
+  return n;
+end $$;
+revoke all on function public.sjk_clear_bookings() from public, anon;
+grant execute on function public.sjk_clear_bookings() to authenticated;
 
 -- Live updates: every family phone hears about a new or removed stay.
 do $$

@@ -42,6 +42,7 @@ The app uses the **GRA Moissanite Supabase project**, on purpose: the family reu
 
 - Only the six family numbers can sign in or see bookings.
 - Each member can add stays under their own name and remove only their own.
+- **Admin (Anuj prabhu):** can also remove anyone's stay (from its day on the calendar) and clear every booking (My stays → Admin). Set by `is_admin` in `schema.sql`; `admin` in `model.ts` only decides what the app shows.
 - **First come, first served:** once a date is booked, nobody else can book it. The app politely declines, and the database refuses it too, even if two people confirm at the same moment.
 - Guests aren't signed in. A guest link can read only its own stay, without any phone numbers.
 
