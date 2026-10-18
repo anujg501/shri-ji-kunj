@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet><meta name="design_doc_mode" content="canvas"><link rel="stylesheet" href="colors_and_type.css"><style>body{margin:0;background:var(--paper-2);font-family:var(--font-sans);color:var(--ink)}a{color:var(--emerald)}a:hover{color:var(--emerald-ink)}input,select,button{font-family:var(--font-sans)}</style></helmet>
+<div style="padding:40px 48px 64px;display:flex;flex-direction:column;gap:28px">
+  <div style="display:flex;flex-direction:column;gap:6px;max-width:860px">
+    <div style="font-family:var(--font-serif);font-size:32px;font-weight:600">Shri Ji Kunj — family &amp; guest app</div>
+    <div style="font-size:15px;color:var(--ink-2);line-height:1.5;text-wrap:pretty">Both phones share one live calendar. Sign in on the family side (any 10-digit number, any 4-digit OTP), block dates, then open the guest view from the confirmation screen.</div>
+  </div>
+  <div style="display:flex;flex-wrap:wrap;gap:56px;align-items:flex-start">
+
+  <div style="display:flex;flex-direction:column;gap:12px">
+    <div style="display:flex;align-items:baseline;gap:10px"><span style="font:600 11px var(--font-mono);padding:3px 7px;background:var(--ink);color:var(--paper);border-radius:4px">A</span><span style="font-weight:600">Family side</span></div>
+    <div style="width:390px;height:844px;background:var(--ink);border-radius:56px;padding:11px;box-shadow:var(--shadow-lg)">
+    <div style="width:100%;height:100%;border-radius:46px;overflow:hidden;background:var(--paper);position:relative;display:flex;flex-direction:column">
+      <div style="height:46px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 30px;font:600 15px var(--font-sans)"><span>9:41</span><span style="width:26px;height:12px;border:1.5px solid var(--ink);border-radius:4px"></span></div>
+
+      <sc-if value="{{ fIsPhone }}" hint-placeholder-val="{{ true }}">
+        <div style="flex:1;display:flex;flex-direction:column;padding:28px 28px 40px;gap:24px">
+          <div style="display:flex;flex-direction:column;align-items:center;gap:10px;margin-top:4px">
+            <img src="gev-logo.png" alt="Goverdhan Ecovillage" style="width:240px;height:120px;object-fit:contain;mix-blend-mode:multiply">
+            <div style="font-family:var(--font-serif);font-size:30px;font-weight:600">Shri Ji Kunj</div>
+            <div style="font-size:14px;color:var(--ink-3)">Family calendar · Goverdhan Eco Village</div>
+          </div>
+          <div style="flex:1;min-height:0;position:relative;border-radius:var(--r-xl);overflow:hidden;box-shadow:var(--shadow-md)"><img src="deity-darshan.png" alt="Sri Krishna darshan, ISKCON GEV" style="position:absolute;inset:0;display:block;width:100%;height:100%;object-fit:cover;object-position:center 40%;transform:scale(1.04)"></div>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <label style="font-size:13px;font-weight:600;color:var(--ink-2)">Mobile number</label>
+            <div style="display:flex;align-items:center;height:54px;border:1px solid var(--border-strong);border-radius:var(--r-md);background:var(--surface-2);padding:0 14px;gap:10px">
+              <span style="font-family:var(--font-mono);color:var(--ink-3)">+91</span>
+              <input value="{{ fPhone }}" onChange="{{ onPhone }}" inputMode="numeric" placeholder="10-digit number" style="flex:1;border:0;outline:0;background:transparent;font:500 18px var(--font-mono);color:var(--ink);letter-spacing:.04em;min-width:0">
+            </div>
+          </div>
+          <button onClick="{{ sendOtp }}" style="height:54px;border:0;border-radius:var(--r-md);background:var(--emerald);color:#fff;font-weight:600;font-size:16px;cursor:pointer;opacity:{{ phoneOpacity }}">Send OTP</button>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ fIsOtp }}" hint-placeholder-val="{{ false }}">
+        <div style="flex:1;display:flex;flex-direction:column;padding:20px 28px 40px;gap:20px">
+          <button onClick="{{ backToPhone }}" style="align-self:flex-start;border:0;background:none;color:var(--emerald);font-weight:600;font-size:15px;padding:8px 0;cursor:pointer">← Change number</button>
+          <div style="font-family:var(--font-serif);font-size:28px;font-weight:600;line-height:1.15">Enter the code</div>
+          <div style="font-size:15px;color:var(--ink-2)">Sent by SMS to <span style="font-family:var(--font-mono)">+91 {{ fPhone }}</span></div>
+          <input value="{{ otp }}" onChange="{{ onOtp }}" inputMode="numeric" placeholder="• • • •" style="height:64px;border:1px solid var(--border-strong);border-radius:var(--r-md);background:var(--surface-2);text-align:center;font:500 30px var(--font-mono);letter-spacing:.5em;color:var(--ink);outline:0">
+          <div style="font-size:13px;color:var(--ink-3)">Prototype: any 4 digits work.</div>
+          <div style="flex:1"></div>
+          <button onClick="{{ verify }}" style="height:54px;border:0;border-radius:var(--r-md);background:var(--emerald);color:#fff;font-weight:600;font-size:16px;cursor:pointer;opacity:{{ otpOpacity }}">Verify</button>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ fIsWho }}" hint-placeholder-val="{{ false }}">
+        <div style="flex:1;display:flex;flex-direction:column;padding:20px 24px 32px;gap:16px;overflow:auto">
+          <div style="font-family:var(--font-serif);font-size:28px;font-weight:600;line-height:1.15;padding:0 4px">Hare Krishna. Who is this?</div>
+          <div style="font-size:14px;color:var(--ink-3);padding:0 4px">Asked once. Your number is linked to your name after this.</div>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <sc-for list="{{ members }}" as="m" hint-placeholder-count="6">
+              <button onClick="{{ m.onPick }}" style="display:flex;align-items:center;gap:14px;padding:12px 14px;min-height:64px;border:1px solid var(--border);border-radius:var(--r-lg);background:var(--surface);cursor:pointer;text-align:left">
+                <span style="width:40px;height:40px;border-radius:50%;background:{{ m.color }};color:#fff;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:14px;flex:none">{{ m.ini }}</span>
+                <span style="display:flex;flex-direction:column"><span style="font-weight:600;font-size:16px;color:var(--ink)">{{ m.name }}</span><span style="font-size:13px;color:var(--ink-3)">{{ m.full }}</span></span>
+              </button>
+            </sc-for>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ fIsApp }}" hint-placeholder-val="{{ false }}">
+        <div style="flex:1;display:flex;flex-direction:column;min-height:0;position:relative">
+          <div style="flex:none;display:flex;align-items:center;gap:12px;padding:6px 20px 12px;border-bottom:1px solid var(--divider)">
+            <img src="gev-logo.png" alt="Goverdhan Ecovillage" style="width:68px;height:36px;object-fit:contain;mix-blend-mode:multiply;flex:none">
+            <div style="flex:1;display:flex;flex-direction:column">
+              <span style="font-family:var(--font-serif);font-size:22px;font-weight:600;line-height:1.1">Shri Ji Kunj</span>
+              <span style="font-size:12px;color:var(--ink-3)">F 11-103 · Goverdhan Kunj</span>
+            </div>
+            <button onClick="{{ signOut }}" title="Sign out" style="width:40px;height:40px;border-radius:50%;border:0;background:{{ meColor }};color:#fff;font-weight:600;font-size:14px;cursor:pointer">{{ meIni }}</button>
+          </div>
+
+          <div style="flex:1;overflow:auto;min-height:0">
+            <sc-if value="{{ tabCal }}" hint-placeholder-val="{{ true }}">
+              <div style="display:flex;flex-direction:column;padding:14px 12px 120px;gap:14px">
+                <div style="display:flex;align-items:center;justify-content:space-between;padding:0 6px">
+                  <button onClick="{{ prevMonth }}" style="width:44px;height:44px;border-radius:50%;border:1px solid var(--border);background:var(--surface);font-size:18px;cursor:pointer;color:var(--ink)">‹</button>
+                  <span style="font-family:var(--font-serif);font-size:22px;font-weight:600">{{ monthLabel }}</span>
+                  <button onClick="{{ nextMonth }}" style="width:44px;height:44px;border-radius:50%;border:1px solid var(--border);background:var(--surface);font-size:18px;cursor:pointer;color:var(--ink)">›</button>
+                </div>
+                <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden">
+                  <div style="display:grid;grid-template-columns:repeat(7,1fr);background:var(--paper-2);border-bottom:1px solid var(--border)">
+                    <span style="text-align:center;padding:8px 0;font-size:11px;font-weight:600;color:var(--ink-3)">MON</span><span style="text-align:center;padding:8px 0;font-size:11px;font-weight:600;color:var(--ink-3)">TUE</span><span style="text-align:center;padding:8px 0;font-size:11px;font-weight:600;color:var(--ink-3)">WED</span><span style="text-align:center;padding:8px 0;font-size:11px;font-weight:600;color:var(--ink-3)">THU</span><span style="text-align:center;padding:8px 0;font-size:11px;font-weight:600;color:var(--ink-3)">FRI</span><span style="text-align:center;padding:8px 0;font-size:11px;font-weight:600;color:var(--ink-3)">SAT</span><span style="text-align:center;padding:8px 0;font-size:11px;font-weight:600;color:var(--ink-3)">SUN</span>
+                  </div>
+                  <sc-for list="{{ weeks }}" as="w" hint-placeholder-count="5">
+                    <div style="display:grid;grid-template-columns:repeat(7,1fr);border-bottom:1px solid var(--divider)">
+                      <sc-for list="{{ w.cells }}" as="c" hint-placeholder-count="7">
+                        <button onClick="{{ c.onClick }}" style="height:66px;border:0;padding:5px 0 0;background:{{ c.bg }};display:flex;flex-direction:column;gap:3px;cursor:pointer;opacity:{{ c.opacity }};min-width:0">
+                          <span style="align-self:center;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:{{ c.weight }};color:{{ c.numColor }};background:{{ c.numBg }};box-shadow:{{ c.ring }}">{{ c.day }}</span>
+                          <sc-for list="{{ c.marks }}" as="k" hint-placeholder-count="0">
+                            <span style="height:14px;background:{{ k.color }};border-radius:{{ k.radius }};margin-left:{{ k.ml }};margin-right:{{ k.mr }};color:#fff;font-size:9px;font-weight:600;line-height:14px;padding-left:3px;text-align:left;white-space:nowrap;overflow:hidden">{{ k.label }}</span>
+                          </sc-for>
+                          <span style="font-size:9px;color:var(--ink-3);font-weight:600;line-height:10px">{{ c.more }}</span>
+                        </button>
+                      </sc-for>
+                    </div>
+                  </sc-for>
+                </div>
+                <div style="display:flex;flex-wrap:wrap;gap:6px 14px;padding:0 6px">
+                  <sc-for list="{{ legend }}" as="m" hint-placeholder-count="6">
+                    <span style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--ink-2)"><span style="width:10px;height:10px;border-radius:3px;background:{{ m.color }}"></span>{{ m.name }}</span>
+                  </sc-for>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:8px">
+                  <div style="font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);padding:6px 6px 0">This month</div>
+                  <sc-for list="{{ monthStays }}" as="s" hint-placeholder-count="3">
+                    <button onClick="{{ s.onClick }}" style="display:flex;align-items:center;gap:12px;padding:12px 14px;border:1px solid var(--border);border-radius:var(--r-lg);background:var(--surface);cursor:pointer;text-align:left">
+                      <span style="width:6px;align-self:stretch;border-radius:3px;background:{{ s.color }}"></span>
+                      <span style="flex:1;display:flex;flex-direction:column;gap:2px;min-width:0"><span style="font-weight:600;font-size:15px;color:var(--ink)">{{ s.guest }}</span><span style="font-size:13px;color:var(--ink-3)">{{ s.meta }}</span></span>
+                      <span style="font-family:var(--font-mono);font-size:13px;color:var(--ink-2);text-align:right">{{ s.range }}</span>
+                    </button>
+                  </sc-for>
+                  <sc-if value="{{ noMonthStays }}" hint-placeholder-val="{{ false }}">
+                    <div style="padding:16px;text-align:center;font-size:14px;color:var(--ink-3);border:1px dashed var(--border);border-radius:var(--r-lg)">Flat is free all month.</div>
+                  </sc-if>
+                </div>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ tabMine }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;flex-direction:column;padding:18px 16px 40px;gap:10px">
+                <div style="font-family:var(--font-serif);font-size:24px;font-weight:600;padding:0 4px 4px">My stays</div>
+                <sc-for list="{{ myStays }}" as="s" hint-placeholder-count="2">
+                  <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:14px 16px;display:flex;flex-direction:column;gap:10px">
+                    <div style="display:flex;justify-content:space-between;gap:10px"><span style="font-weight:600;font-size:16px">{{ s.guest }}</span><span style="font-family:var(--font-mono);font-size:13px;color:var(--ink-2)">{{ s.range }}</span></div>
+                    <div style="font-size:13px;color:var(--ink-3)">{{ s.meta }}</div>
+                    <div style="display:flex;gap:8px">
+                      <button onClick="{{ s.onShare }}" style="flex:1;height:44px;border-radius:var(--r-md);border:0;background:var(--emerald);color:#fff;font-weight:600;font-size:14px;cursor:pointer">Share guest link</button>
+                      <button onClick="{{ s.onOpen }}" style="flex:1;height:44px;border-radius:var(--r-md);border:1px solid var(--border-strong);background:var(--surface-2);color:var(--ink);font-weight:600;font-size:14px;cursor:pointer">Details</button>
+                    </div>
+                  </div>
+                </sc-for>
+                <sc-if value="{{ noMine }}" hint-placeholder-val="{{ false }}">
+                  <div style="padding:24px 16px;text-align:center;font-size:14px;color:var(--ink-3);border:1px dashed var(--border);border-radius:var(--r-lg)">You have no upcoming stays.</div>
+                </sc-if>
+                <button onClick="{{ startBlock }}" style="height:52px;border-radius:var(--r-md);border:1.5px dashed var(--emerald);background:transparent;color:var(--emerald);font-weight:600;font-size:15px;cursor:pointer;margin-top:6px">+ Block new dates</button>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ tabInfo }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;flex-direction:column;padding:16px 16px 40px;gap:14px">
+                <div style="font-family:var(--font-serif);font-size:24px;font-weight:600;padding:0 4px">Stay info</div>
+                <div style="font-size:13px;color:var(--ink-3);padding:0 4px;margin-top:-8px">Same pages your guests see.</div>
+                <div style="display:flex;flex-wrap:wrap;gap:6px">
+                  <sc-for list="{{ infoChips }}" as="ch" hint-placeholder-count="6">
+                    <button onClick="{{ ch.onClick }}" style="height:36px;padding:0 14px;border-radius:18px;border:1px solid {{ ch.border }};background:{{ ch.bg }};color:{{ ch.fg }};font-weight:600;font-size:13px;cursor:pointer">{{ ch.label }}</button>
+                  </sc-for>
+                </div>
+                <dc-import name="StayInfo" section="{{ infoSec }}" hint-size="100%,500px"></dc-import>
+              </div>
+            </sc-if>
+          </div>
+
+          <sc-if value="{{ selecting }}" hint-placeholder-val="{{ false }}">
+            <div style="position:absolute;left:12px;right:12px;bottom:84px;background:var(--ink);color:var(--paper);border-radius:var(--r-lg);padding:14px 16px;display:flex;flex-direction:column;gap:12px;box-shadow:var(--shadow-lg)">
+              <div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:12px;color:var(--ink-4);font-weight:600;letter-spacing:.06em;text-transform:uppercase">{{ selPrompt }}</span><span style="font-family:var(--font-serif);font-size:20px;font-weight:600">{{ selSummary }}</span></div>
+              <div style="display:flex;gap:8px">
+                <button onClick="{{ cancelSel }}" style="flex:1;height:46px;border-radius:var(--r-md);border:1px solid var(--ink-3);background:transparent;color:var(--paper);font-weight:600;font-size:15px;cursor:pointer">Cancel</button>
+                <button onClick="{{ continueSel }}" style="flex:1.4;height:46px;border-radius:var(--r-md);border:0;background:var(--emerald);color:#fff;font-weight:600;font-size:15px;cursor:pointer;opacity:{{ selOpacity }}">Continue</button>
+              </div>
+            </div>
+          </sc-if>
+
+          <div style="flex:none;height:76px;border-top:1px solid var(--border);background:var(--surface);display:grid;grid-template-columns:1fr 1.5fr 1fr 1fr;align-items:center;padding:0 10px 14px">
+            <button onClick="{{ goCal }}" style="height:54px;border:0;background:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;color:{{ calColor }};font-weight:600;font-size:12px">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="16" rx="2"></rect><path d="M3 10h18M8 3v4M16 3v4"></path></svg>Calendar</button>
+            <button onClick="{{ startBlock }}" style="height:48px;margin:0 6px;border:0;border-radius:24px;background:var(--emerald);color:#fff;font-weight:600;font-size:14px;white-space:nowrap;padding:0 8px;cursor:pointer">+ Block</button>
+            <button onClick="{{ goMine }}" style="height:54px;border:0;background:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;color:{{ mineColor }};font-weight:600;font-size:12px">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"></circle><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"></path></svg>My stays</button>
+            <button onClick="{{ goInfo }}" style="height:54px;border:0;background:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;color:{{ infoColor }};font-weight:600;font-size:12px">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v6M12 7.5v.5"></path></svg>Stay info</button>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ hasSheet }}" hint-placeholder-val="{{ false }}">
+        <div style="position:absolute;inset:0;background:rgba(21,19,15,.38);display:flex;flex-direction:column;justify-content:flex-end;z-index:5">
+          <div onClick="{{ closeSheet }}" style="flex:1"></div>
+          <div style="background:var(--surface);border-radius:22px 22px 0 0;max-height:88%;overflow:auto;padding:10px 20px 32px;display:flex;flex-direction:column;gap:14px">
+            <div style="align-self:center;width:40px;height:5px;border-radius:3px;background:var(--border)"></div>
+
+            <sc-if value="{{ sheetDay }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;flex-direction:column;gap:14px">
+                <div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)">Night of</span><span style="font-family:var(--font-serif);font-size:26px;font-weight:600">{{ dayTitle }}</span></div>
+                <sc-if value="{{ dayFree }}" hint-placeholder-val="{{ false }}">
+                  <div style="display:flex;align-items:center;gap:10px;padding:14px;border-radius:var(--r-lg);background:var(--emerald-soft);color:var(--emerald-ink);font-weight:600"><span style="width:10px;height:10px;border-radius:50%;background:var(--emerald)"></span>Available</div>
+                </sc-if>
+                <sc-for list="{{ dayStays }}" as="s" hint-placeholder-count="1">
+                  <div style="border:1px solid var(--border);border-radius:var(--r-lg);background:var(--surface-2);padding:14px;display:flex;flex-direction:column;gap:10px">
+                    <div style="display:flex;align-items:center;gap:10px">
+                      <span style="width:34px;height:34px;border-radius:50%;background:{{ s.color }};color:#fff;font-weight:600;font-size:13px;display:flex;align-items:center;justify-content:center;flex:none">{{ s.ini }}</span>
+                      <span style="flex:1;display:flex;flex-direction:column"><span style="font-weight:600">Blocked by {{ s.memberName }}</span><span style="font-family:var(--font-mono);font-size:13px;color:var(--ink-3)">{{ s.range }}</span></span>
+                    </div>
+                    <div style="display:grid;grid-template-columns:auto 1fr;gap:4px 14px;font-size:14px">
+                      <span style="color:var(--ink-3)">Guest</span><span style="font-weight:500">{{ s.guest }}</span>
+                      <span style="color:var(--ink-3)">People</span><span style="font-weight:500">{{ s.count }}</span>
+                      <span style="color:var(--ink-3)">Mobile</span><span style="font-family:var(--font-mono)">{{ s.phone }}</span>
+                    </div>
+                    <sc-if value="{{ s.isMine }}" hint-placeholder-val="{{ false }}">
+                      <div style="display:flex;gap:8px">
+                        <button onClick="{{ s.onShare }}" style="flex:1;height:44px;border-radius:var(--r-md);border:0;background:var(--emerald);color:#fff;font-weight:600;font-size:14px;cursor:pointer">Guest link</button>
+                        <button onClick="{{ s.onUnblock }}" style="flex:1;height:44px;border-radius:var(--r-md);border:1px solid var(--ruby);background:{{ s.unBg }};color:{{ s.unFg }};font-weight:600;font-size:14px;cursor:pointer">{{ s.unLabel }}</button>
+                      </div>
+                    </sc-if>
+                  </div>
+                </sc-for>
+                <button onClick="{{ blockFromDay }}" style="height:52px;border-radius:var(--r-md);border:0;background:var(--emerald);color:#fff;font-weight:600;font-size:16px;cursor:pointer">{{ blockFromLabel }}</button>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ sheetForm }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;flex-direction:column;gap:14px">
+                <div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)">Block dates</span><span style="font-family:var(--font-serif);font-size:24px;font-weight:600">{{ formRange }}</span><span style="font-size:13px;color:var(--ink-3)">{{ formNights }}</span></div>
+                <sc-for list="{{ overlaps }}" as="o" hint-placeholder-count="0">
+                  <div style="background:var(--amber-soft);border-radius:var(--r-md);padding:12px 14px;font-size:14px;line-height:1.45;color:var(--ink)"><span style="font-weight:600">Shared stay.</span> {{ o.text }}</div>
+                </sc-for>
+                <div style="display:flex;flex-direction:column;gap:6px">
+                  <label style="font-size:13px;font-weight:600;color:var(--ink-2)">Guest name</label>
+                  <input value="{{ fGuest }}" onChange="{{ onGuest }}" placeholder="e.g. Mehta family" style="height:50px;border:1px solid {{ guestBorder }};border-radius:var(--r-md);background:var(--surface-2);padding:0 14px;font-size:16px;outline:0;color:var(--ink)">
+                </div>
+                <div style="display:flex;flex-direction:column;gap:6px">
+                  <label style="font-size:13px;font-weight:600;color:var(--ink-2)">Guest mobile number</label>
+                  <div style="display:flex;align-items:center;height:50px;border:1px solid {{ gPhoneBorder }};border-radius:var(--r-md);background:var(--surface-2);padding:0 14px;gap:10px"><span style="font-family:var(--font-mono);color:var(--ink-3)">+91</span><input value="{{ fGPhone }}" onChange="{{ onGPhone }}" inputMode="numeric" placeholder="10 digits" style="flex:1;border:0;outline:0;background:transparent;font:500 16px var(--font-mono);color:var(--ink);min-width:0"></div>
+                </div>
+                <div style="display:flex;align-items:center;justify-content:space-between">
+                  <label style="font-size:13px;font-weight:600;color:var(--ink-2)">Number of people</label>
+                  <div style="display:flex;align-items:center;gap:4px;border:1px solid var(--border-strong);border-radius:var(--r-md);background:var(--surface-2)">
+                    <button onClick="{{ countDec }}" style="width:46px;height:46px;border:0;background:none;font-size:22px;cursor:pointer;color:var(--ink)">−</button>
+                    <span style="min-width:28px;text-align:center;font:600 18px var(--font-mono)">{{ fCount }}</span>
+                    <button onClick="{{ countInc }}" style="width:46px;height:46px;border:0;background:none;font-size:22px;cursor:pointer;color:var(--ink)">+</button>
+                  </div>
+                </div>
+                <sc-if value="{{ formError }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;color:var(--ruby)">Add the guest's name and a 10-digit mobile number.</div></sc-if>
+                <button onClick="{{ confirm }}" style="height:54px;border-radius:var(--r-md);border:0;background:var(--emerald);color:#fff;font-weight:600;font-size:16px;cursor:pointer">Confirm &amp; block</button>
+                <button onClick="{{ backToCal }}" style="height:40px;border:0;background:none;color:var(--ink-2);font-weight:600;font-size:14px;cursor:pointer">Change dates</button>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ sheetDone }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;flex-direction:column;gap:14px">
+                <div style="display:flex;align-items:center;gap:12px"><span style="width:44px;height:44px;border-radius:50%;background:var(--emerald);color:#fff;display:flex;align-items:center;justify-content:center;font-size:22px;flex:none">✓</span><span style="display:flex;flex-direction:column"><span style="font-family:var(--font-serif);font-size:22px;font-weight:600">{{ doneTitle }}</span><span style="font-size:14px;color:var(--ink-3)">{{ doneMeta }}</span></span></div>
+                <div style="display:flex;flex-direction:column;gap:8px">
+                  <label style="font-size:13px;font-weight:600;color:var(--ink-2)">Guest link — share with {{ doneGuest }}</label>
+                  <div style="display:flex;align-items:center;gap:8px;border:1px solid var(--border-strong);border-radius:var(--r-md);background:var(--surface-2);padding:6px 6px 6px 12px">
+                    <span style="flex:1;font:500 13px var(--font-mono);color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ doneLink }}</span>
+                    <button onClick="{{ copyLink }}" style="height:38px;padding:0 14px;border-radius:var(--r-sm);border:0;background:var(--ink);color:var(--paper);font-weight:600;font-size:13px;cursor:pointer">{{ copyLabel }}</button>
+                  </div>
+                </div>
+                <a href="{{ waHref }}" target="_blank" style="height:52px;border-radius:var(--r-md);background:var(--emerald);color:#fff;font-weight:600;font-size:16px;display:flex;align-items:center;justify-content:center;text-decoration:none">Send on WhatsApp</a>
+                <button onClick="{{ openGuest }}" style="height:48px;border-radius:var(--r-md);border:1px solid var(--border-strong);background:var(--surface-2);color:var(--ink);font-weight:600;font-size:15px;cursor:pointer">Preview guest app →</button>
+                <sc-for list="{{ notified }}" as="n" hint-placeholder-count="0">
+                  <div style="display:flex;flex-direction:column;gap:6px;border-top:1px solid var(--divider);padding-top:12px">
+                    <span style="font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)">WhatsApp sent to {{ n.name }}</span>
+                    <div style="align-self:flex-start;max-width:92%;background:var(--emerald-soft);border-radius:4px 14px 14px 14px;padding:10px 12px;font-size:14px;line-height:1.45;color:var(--ink)">{{ n.msg }}</div>
+                  </div>
+                </sc-for>
+              </div>
+            </sc-if>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ hasToast }}" hint-placeholder-val="{{ false }}">
+        <div style="position:absolute;top:56px;left:16px;right:16px;background:var(--ink);color:var(--paper);border-radius:var(--r-md);padding:12px 14px;font-size:14px;font-weight:500;z-index:10;box-shadow:var(--shadow-md)">{{ toast }}</div>
+      </sc-if>
+    </div>
+    </div>
+    <div style="max-width:390px;font-size:13px;color:var(--ink-3);line-height:1.5">Tap a day to see who blocked it. "Block dates" → tap check-in, then check-out. Tap your avatar to sign out.</div>
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:12px">
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap"><span style="font:600 11px var(--font-mono);padding:3px 7px;background:var(--ink);color:var(--paper);border-radius:4px">B</span><span style="font-weight:600">Guest side</span><span style="font-size:13px;color:var(--ink-3)">opened from link</span>
+      <select value="{{ gId }}" onChange="{{ onGuestSelect }}" style="height:32px;border:1px solid var(--border-strong);border-radius:var(--r-sm);background:var(--surface-2);font-size:13px;color:var(--ink);padding:0 8px">
+        <sc-for list="{{ guestOptions }}" as="o" hint-placeholder-count="3"><option value="{{ o.id }}">{{ o.label }}</option></sc-for>
+      </select>
+    </div>
+    <div style="width:390px;height:844px;background:var(--ink);border-radius:56px;padding:11px;box-shadow:var(--shadow-lg)">
+    <div style="width:100%;height:100%;border-radius:46px;overflow:hidden;background:var(--paper);position:relative;display:flex;flex-direction:column">
+      <div style="height:46px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 30px;font:600 15px var(--font-sans)"><span>9:41</span><span style="width:26px;height:12px;border:1.5px solid var(--ink);border-radius:4px"></span></div>
+      <div style="flex:none;display:flex;align-items:center;gap:12px;padding:6px 20px 12px;border-bottom:1px solid var(--divider)">
+        <img src="gev-logo.png" alt="Goverdhan Ecovillage" style="width:68px;height:36px;object-fit:contain;mix-blend-mode:multiply;flex:none">
+        <div style="display:flex;flex-direction:column"><span style="font-family:var(--font-serif);font-size:20px;font-weight:600;line-height:1.1">Shri Ji Kunj</span><span style="font-size:12px;color:var(--ink-3)">Goverdhan Eco Village</span></div>
+      </div>
+      <div style="flex:1;overflow:auto;min-height:0">
+        <div style="display:flex;flex-direction:column;padding:16px 16px 32px;gap:14px">
+          <sc-if value="{{ gIsStay }}" hint-placeholder-val="{{ true }}">
+            <div style="background:var(--emerald);color:#fff;border-radius:var(--r-xl);padding:20px;display:flex;flex-direction:column;gap:14px">
+              <div style="font-size:14px;color:var(--emerald-soft)">Hare Krishna, {{ gGuest }}</div>
+              <div style="font-family:var(--font-serif);font-size:30px;font-weight:600;line-height:1.1">{{ gRange }}</div>
+              <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;border-top:1px solid rgba(255,255,255,.25);padding-top:12px">
+                <span style="display:flex;flex-direction:column"><span style="font-size:11px;color:var(--emerald-soft);text-transform:uppercase;letter-spacing:.06em">Nights</span><span style="font:600 18px var(--font-mono)">{{ gNights }}</span></span>
+                <span style="display:flex;flex-direction:column"><span style="font-size:11px;color:var(--emerald-soft);text-transform:uppercase;letter-spacing:.06em">People</span><span style="font:600 18px var(--font-mono)">{{ gCount }}</span></span>
+                <span style="display:flex;flex-direction:column"><span style="font-size:11px;color:var(--emerald-soft);text-transform:uppercase;letter-spacing:.06em">Host</span><span style="font-weight:600;font-size:15px;line-height:1.5">{{ gHost }}</span></span>
+              </div>
+            </div>
+            <sc-for list="{{ gSharing }}" as="o" hint-placeholder-count="0">
+              <div style="background:var(--sapphire-soft);color:var(--sapphire);border-radius:var(--r-md);padding:12px 14px;font-size:14px;line-height:1.45">{{ o.text }}</div>
+            </sc-for>
+          </sc-if>
+          <sc-if value="{{ gHasTitle }}" hint-placeholder-val="{{ false }}">
+            <div style="font-family:var(--font-serif);font-size:26px;font-weight:600;padding:0 4px">{{ gTitle }}</div>
+          </sc-if>
+          <dc-import name="StayInfo" section="{{ gTab }}" hint-size="100%,500px"></dc-import>
+        </div>
+      </div>
+      <div style="flex:none;height:76px;border-top:1px solid var(--border);background:var(--surface);display:grid;grid-template-columns:repeat(6,1fr);padding:0 4px 14px">
+        <sc-for list="{{ gTabs }}" as="t" hint-placeholder-count="6">
+          <button onClick="{{ t.onClick }}" style="border:0;background:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;cursor:pointer;color:{{ t.color }};font-weight:600;font-size:11px;padding:0;white-space:nowrap">
+            <span style="width:22px;height:3px;border-radius:2px;background:{{ t.bar }}"></span>{{ t.label }}</button>
+        </sc-for>
+      </div>
+    </div>
+    </div>
+    <div style="max-width:390px;font-size:13px;color:var(--ink-3);line-height:1.5">No sign-in for guests — the link opens their stay. Darshan timings and e-bike steps are drafts for you to correct.</div>
+  </div>
+
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;startSignedIn&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Prototype&quot;},&quot;calendarLabels&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;initials&quot;,&quot;names&quot;],&quot;default&quot;:&quot;initials&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Calendar&quot;}}">
+const MEMBERS = [
+  { id: 'ma', name: 'Ma', full: 'Amoha Radha Devi Dasi', color: '#8B1E2E', ini: 'Ma' },
+  { id: 'bapuji', name: 'Bapuji', full: 'Ashok ji Gupta', color: '#0E5C4A', ini: 'Ba' },
+  { id: 'arun', name: 'Arun prabhu', full: 'Arun prabhu', color: '#1E3A8A', ini: 'Ar' },
+  { id: 'surbhi', name: 'Surbhi mataji', full: 'Radha Devi Dasi', color: '#B7791F', ini: 'Su' },
+  { id: 'swapnil', name: 'Swapnil mataji', full: 'Swapnil mataji', color: '#6B3F73', ini: 'Sw' },
+  { id: 'anuj', name: 'Anuj prabhu', full: 'Anuj prabhu', color: '#4A5F2C', ini: 'An' },
+];
+const MB = Object.fromEntries(MEMBERS.map(m => [m.id, m]));
+const MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const MONL = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+const DOW = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+const pad = n => String(n).padStart(2, '0');
+const iso = d => d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
+const parse = s => { const [y, m, d] = s.split('-').map(Number); return new Date(y, m - 1, d); };
+const add = (s, n) => { const d = parse(s); d.setDate(d.getDate() + n); return iso(d); };
+const fmt = s => { const d = parse(s); return d.getDate() + ' ' + MON[d.getMonth()]; };
+const nightsOf = (a, b) => Math.round((parse(b) - parse(a)) / 864e5);
+const TODAY = iso(new Date());
+const KEY = 'srk_bookings_v1';
+const LINK = id => 'https://shriradhakunj.app/stay/' + id;
+const fmtPhone = p => p ? p.slice(0, 5) + ' ' + p.slice(5) : '';
+const seed = () => [
+  { id: 'RK-M4T2', member: 'bapuji', guest: 'Mehta family', phone: '9820011111', count: 4, start: add(TODAY, 4), end: add(TODAY, 7) },
+  { id: 'RK-P8R1', member: 'surbhi', guest: 'Priya & Rohan', phone: '9820022222', count: 2, start: add(TODAY, 6), end: add(TODAY, 9) },
+  { id: 'RK-A3F9', member: 'arun', guest: 'Sharma ji & family', phone: '9820033333', count: 3, start: add(TODAY, 12), end: add(TODAY, 15) },
+  { id: 'RK-K7S5', member: 'anuj', guest: 'Kartik Sharma', phone: '9820044444', count: 1, start: add(TODAY, 19), end: add(TODAY, 22) },
+  { id: 'RK-G2K6', member: 'ma', guest: 'Kirtan group, Pune', phone: '9820055555', count: 5, start: add(TODAY, 27), end: add(TODAY, 33) },
+];
+const load = () => { try { const v = JSON.parse(localStorage.getItem(KEY)); if (Array.isArray(v) && v.length) return v; } catch (e) {} return seed(); };
+const overlap = (a, s, e) => a.start < e && a.end > s;
+
+class Component extends DCLogic {
+  state = {
+    bookings: load(), step: 'phone', fPhone: '', otp: '', me: null, tab: 'cal', infoSec: 'stay',
+    ym: [new Date().getFullYear(), new Date().getMonth()],
+    sheet: null, selecting: false, selStart: null, selEnd: null,
+    form: { guest: '', phone: '', count: 2 }, touched: false, copied: false, confirmDel: null, toast: null,
+    gId: null, gTab: 'stay',
+  };
+  componentDidMount() { if (this.props.startSignedIn) this.setState({ step: 'app', me: 'anuj' }); }
+  save(bookings, extra) { try { localStorage.setItem(KEY, JSON.stringify(bookings)); } catch (e) {} this.setState({ bookings, ...extra }); }
+  toast(msg) { this.setState({ toast: msg }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: null }), 2600); }
+  stayText(b) { return fmt(b.start) + ' → ' + fmt(b.end); }
+
+  renderVals() {
+    const st = this.state, B = st.bookings, me = MB[st.me] || MEMBERS[5];
+    const labels = this.props.calendarLabels || 'initials';
+    const set = o => this.setState(o);
+    const openDay = d => set({ sheet: { type: 'day', date: d }, confirmDel: null });
+    const openDone = (id, notified) => set({ sheet: { type: 'done', id, notified: notified || [] }, copied: false, selecting: false });
+
+    // calendar
+    const [y, m] = st.ym;
+    const first = new Date(y, m, 1), off = (first.getDay() + 6) % 7, dim = new Date(y, m + 1, 0).getDate();
+    const nW = Math.ceil((off + dim) / 7), weeks = [];
+    const rowOf = {}, rowEnds = [];
+    B.slice().sort((a, b) => a.start < b.start ? -1 : a.start > b.start ? 1 : 0).forEach(b => {
+      let r = rowEnds.findIndex(e => e <= b.start); if (r < 0) { r = rowEnds.length; rowEnds.push(b.end); } else rowEnds[r] = b.end;
+      rowOf[b.id] = r;
+    });
+    const sS = st.selStart, sE = st.selEnd;
+    for (let w = 0; w < nW; w++) {
+      const cells = [];
+      for (let i = 0; i < 7; i++) {
+        const dt = new Date(y, m, 1 - off + w * 7 + i), d = iso(dt), inM = dt.getMonth() === m, past = d < TODAY;
+        const stays = B.filter(b => b.start <= d && d < b.end).sort((a, b) => a.start < b.start ? -1 : 1);
+        const maxRow = stays.reduce((a, b) => Math.max(a, rowOf[b.id]), -1);
+        const marks = [];
+        for (let r = 0; r <= Math.min(maxRow, 1); r++) {
+          const b = stays.find(x => rowOf[x.id] === r);
+          if (!b) { marks.push({ color: 'transparent', label: '', radius: '0', ml: '0', mr: '0' }); continue; }
+          const s0 = d === b.start || i === 0, e0 = add(d, 1) === b.end;
+          const mm = MB[b.member];
+          marks.push({ color: mm.color, label: s0 ? (labels === 'names' ? mm.name.split(' ')[0] : mm.ini) : '', radius: `${s0 ? 4 : 0}px ${e0 ? 4 : 0}px ${e0 ? 4 : 0}px ${s0 ? 4 : 0}px`, ml: d === b.start ? '4px' : '0', mr: e0 ? '4px' : '0' });
+        }
+        const hidden = stays.filter(x => rowOf[x.id] > 1).length;
+        const isEnd = st.selecting && (d === sS || d === sE);
+        const inSel = st.selecting && sS && sE && d > sS && d < sE;
+        cells.push({
+          key: d, day: dt.getDate(), opacity: inM ? 1 : 0.35, marks, more: hidden ? '+' + hidden : '',
+          bg: inSel ? 'var(--emerald-soft)' : (stays.length ? 'var(--surface)' : 'var(--surface)'),
+          numColor: isEnd ? '#fff' : past ? 'var(--ink-4)' : 'var(--ink)', numBg: isEnd ? 'var(--emerald)' : 'transparent',
+          weight: d === TODAY || isEnd ? 700 : 500, ring: d === TODAY && !isEnd ? 'inset 0 0 0 1.5px var(--emerald)' : 'none',
+          onClick: () => {
+            if (!st.selecting) return openDay(d);
+            if (past) return this.toast('Pick a date from today onwards');
+            if (!sS || sE || d <= sS) set({ selStart: d, selEnd: null }); else set({ selEnd: d });
+          },
+        });
+      }
+      weeks.push({ cells });
+    }
+    const mS = iso(first), mE = iso(new Date(y, m + 1, 1));
+    const monthStays = B.filter(b => overlap(b, mS, mE)).sort((a, b) => a.start < b.start ? -1 : 1).map(b => ({
+      color: MB[b.member].color, guest: b.guest, meta: MB[b.member].name + ' · ' + b.count + (b.count > 1 ? ' people' : ' person'),
+      range: fmt(b.start) + '–' + fmt(b.end), onClick: () => { openDay(b.start < mS ? mS : b.start); },
+    }));
+
+    // selection
+    const nSel = sS && sE ? nightsOf(sS, sE) : 0;
+    const selPrompt = !sS ? 'Step 1 · Tap check-in date' : !sE ? 'Step 2 · Tap check-out date' : nSel + (nSel > 1 ? ' nights' : ' night');
+    const selSummary = !sS ? 'Choose dates' : !sE ? fmt(sS) + ' → ?' : fmt(sS) + ' → ' + fmt(sE);
+
+    // sheets
+    const sh = st.sheet;
+    let day = {};
+    if (sh && sh.type === 'day') {
+      const d = sh.date, dt = parse(d);
+      const ds = B.filter(b => b.start <= d && d < b.end).map(b => {
+        const mm = MB[b.member], mine = b.member === st.me, conf = st.confirmDel === b.id;
+        return {
+          ini: mm.ini, color: mm.color, memberName: mm.name, range: this.stayText(b), guest: b.guest, count: b.count, phone: '+91 ' + fmtPhone(b.phone), isMine: mine,
+          unLabel: conf ? 'Tap to confirm' : 'Unblock', unBg: conf ? 'var(--ruby)' : 'var(--surface-2)', unFg: conf ? '#fff' : 'var(--ruby)',
+          onShare: () => openDone(b.id),
+          onUnblock: () => { if (!conf) return set({ confirmDel: b.id }); this.save(B.filter(x => x.id !== b.id), { confirmDel: null }); this.toast('Dates released — now available to everyone'); },
+        };
+      });
+      day = { dayTitle: DOW[dt.getDay()] + ', ' + fmt(d), dayStays: ds, dayFree: !ds.length, blockFromLabel: ds.length ? 'Also block from ' + fmt(d) : 'Block from ' + fmt(d), past: d < TODAY,
+        blockFromDay: () => { if (d < TODAY) return this.toast('This date has passed'); set({ sheet: null, selecting: true, selStart: d, selEnd: null, tab: 'cal' }); } };
+    }
+    const others = sS && sE ? B.filter(b => b.member !== st.me && overlap(b, sS, sE)) : [];
+    const f = st.form, phoneOk = /^\d{10}$/.test(f.phone), guestOk = f.guest.trim().length > 0;
+    let done = {};
+    if (sh && sh.type === 'done') {
+      const b = B.find(x => x.id === sh.id);
+      if (b) {
+        const link = LINK(b.id);
+        const txt = `Hare Krishna ${b.guest}! Your stay at Shri Ji Kunj, Goverdhan Eco Village is confirmed for ${this.stayText(b)}. Address, map, darshan timings and e-bike guide: ${link}`;
+        done = { doneTitle: sh.notified.length || sh.fresh ? 'Dates blocked' : 'Guest link', doneMeta: this.stayText(b) + ' · ' + b.count + (b.count > 1 ? ' people' : ' person'), doneGuest: b.guest, doneLink: link,
+          waHref: 'https://wa.me/91' + b.phone + '?text=' + encodeURIComponent(txt), copyLabel: st.copied ? 'Copied' : 'Copy',
+          copyLink: () => { try { navigator.clipboard.writeText(link); } catch (e) {} set({ copied: true }); setTimeout(() => this.setState({ copied: false }), 1800); },
+          openGuest: () => { set({ gId: b.id, gTab: 'stay', sheet: null }); this.toast('Guest app now shows ' + b.guest + "'s stay →"); },
+          notified: sh.notified };
+      }
+    }
+
+    // guest side
+    const gb = B.find(b => b.id === st.gId) || B.filter(b => b.end >= TODAY).sort((a, b) => a.start < b.start ? -1 : 1)[0] || B[0];
+    const gTabsDef = [['stay', 'Stay'], ['temple', 'Darshan'], ['explore', 'Explore'], ['ebike', 'Transport'], ['checkout', 'Check-out'], ['sos', 'Help']];
+    const gTitles = { temple: 'Darshan timings', explore: 'Things to do', ebike: 'Transport within GEV', checkout: 'Check-out instructions', sos: 'Emergency' };
+    const gShare = gb ? B.filter(b => b.id !== gb.id && overlap(b, gb.start, gb.end)).map(b => ({ text: `${b.guest} (${MB[b.member].name}'s guests) will also be staying, ${fmt(b.start > gb.start ? b.start : gb.start)} – ${fmt(b.end < gb.end ? b.end : gb.end)}.` })) : [];
+    const infoDef = [['stay', 'Address & map'], ['temple', 'Darshan'], ['explore', 'Things to do'], ['ebike', 'Transport'], ['checkout', 'Check-out'], ['sos', 'Emergency']];
+
+    return {
+      fIsPhone: st.step === 'phone', fIsOtp: st.step === 'otp', fIsWho: st.step === 'who', fIsApp: st.step === 'app',
+      fPhone: st.fPhone, onPhone: e => set({ fPhone: e.target.value.replace(/\D/g, '').slice(0, 10) }),
+      phoneOpacity: st.fPhone.length === 10 ? 1 : 0.45,
+      sendOtp: () => st.fPhone.length === 10 ? set({ step: 'otp', otp: '' }) : this.toast('Enter a 10-digit mobile number'),
+      backToPhone: () => set({ step: 'phone' }),
+      otp: st.otp, onOtp: e => set({ otp: e.target.value.replace(/\D/g, '').slice(0, 4) }), otpOpacity: st.otp.length === 4 ? 1 : 0.45,
+      verify: () => st.otp.length === 4 ? set({ step: st.fPhone === '7710065480' ? 'app' : 'who', me: st.fPhone === '7710065480' ? 'anuj' : st.me }) : null,
+      members: MEMBERS.map(mm => ({ ...mm, onPick: () => { set({ me: mm.id, step: 'app', tab: 'cal' }); this.toast('Hare Krishna, ' + mm.name); } })),
+      legend: MEMBERS,
+      meColor: me.color, meIni: me.ini,
+      signOut: () => set({ step: 'phone', fPhone: '', otp: '', me: null, sheet: null, selecting: false }),
+      tabCal: st.tab === 'cal', tabMine: st.tab === 'mine', tabInfo: st.tab === 'info',
+      calColor: st.tab === 'cal' ? 'var(--emerald)' : 'var(--ink-3)', mineColor: st.tab === 'mine' ? 'var(--emerald)' : 'var(--ink-3)', infoColor: st.tab === 'info' ? 'var(--emerald)' : 'var(--ink-3)',
+      goCal: () => set({ tab: 'cal' }), goMine: () => set({ tab: 'mine', selecting: false }), goInfo: () => set({ tab: 'info' }),
+      goInfoLink: e => { e.preventDefault(); if (st.step === 'app') set({ tab: 'info', selecting: false }); else this.toast('Sign in first'); },
+      monthLabel: MONL[m] + ' ' + y,
+      prevMonth: () => set({ ym: m === 0 ? [y - 1, 11] : [y, m - 1] }), nextMonth: () => set({ ym: m === 11 ? [y + 1, 0] : [y, m + 1] }),
+      weeks, monthStays, noMonthStays: !monthStays.length,
+      myStays: B.filter(b => b.member === st.me && b.end >= TODAY).sort((a, b) => a.start < b.start ? -1 : 1).map(b => ({
+        guest: b.guest, range: fmt(b.start) + '–' + fmt(b.end), meta: nightsOf(b.start, b.end) + ' nights · ' + b.count + ' people · +91 ' + fmtPhone(b.phone),
+        onShare: () => openDone(b.id), onOpen: () => { set({ tab: 'cal', ym: [parse(b.start).getFullYear(), parse(b.start).getMonth()] }); openDay(b.start); },
+      })),
+      noMine: !B.some(b => b.member === st.me && b.end >= TODAY),
+      startBlock: () => set({ tab: 'cal', selecting: true, selStart: null, selEnd: null, sheet: null }),
+      selecting: st.selecting && !sh, selPrompt, selSummary, selOpacity: sS && sE ? 1 : 0.4,
+      cancelSel: () => set({ selecting: false, selStart: null, selEnd: null }),
+      continueSel: () => { if (!(sS && sE)) return this.toast(!sS ? 'Tap your check-in date' : 'Now tap your check-out date'); set({ sheet: { type: 'form' }, form: { guest: '', phone: '', count: 2 }, touched: false }); },
+      infoSec: st.infoSec,
+      infoChips: infoDef.map(([k, l]) => ({ label: l, onClick: () => set({ infoSec: k }), bg: st.infoSec === k ? 'var(--ink)' : 'var(--surface)', fg: st.infoSec === k ? 'var(--paper)' : 'var(--ink-2)', border: st.infoSec === k ? 'var(--ink)' : 'var(--border)' })),
+      hasSheet: !!sh && st.step === 'app', closeSheet: () => set({ sheet: null, confirmDel: null }),
+      sheetDay: sh && sh.type === 'day', sheetForm: sh && sh.type === 'form', sheetDone: sh && sh.type === 'done',
+      ...day, ...done,
+      formRange: sS && sE ? fmt(sS) + ' → ' + fmt(sE) : '', formNights: nSel + (nSel > 1 ? ' nights' : ' night') + ' · check-out ' + (sE ? DOW[parse(sE).getDay()] : ''),
+      overlaps: others.map(b => ({ text: `${MB[b.member].name}'s guests (${b.guest}, ${b.count}) are staying ${fmt(b.start > sS ? b.start : sS)} – ${fmt(b.end < sE ? b.end : sE)}. ${MB[b.member].name} will get a WhatsApp message.` })),
+      fGuest: f.guest, fGPhone: f.phone, fCount: f.count,
+      onGuest: e => set({ form: { ...f, guest: e.target.value } }), onGPhone: e => set({ form: { ...f, phone: e.target.value.replace(/\D/g, '').slice(0, 10) } }),
+      countDec: () => set({ form: { ...f, count: Math.max(1, f.count - 1) } }), countInc: () => set({ form: { ...f, count: Math.min(20, f.count + 1) } }),
+      guestBorder: st.touched && !guestOk ? 'var(--ruby)' : 'var(--border-strong)', gPhoneBorder: st.touched && !phoneOk ? 'var(--ruby)' : 'var(--border-strong)',
+      formError: st.touched && !(guestOk && phoneOk),
+      backToCal: () => set({ sheet: null }),
+      confirm: () => {
+        if (!(guestOk && phoneOk)) return set({ touched: true });
+        const id = 'RK-' + Math.random().toString(36).slice(2, 6).toUpperCase();
+        const nb = { id, member: st.me, guest: f.guest.trim(), phone: f.phone, count: f.count, start: sS, end: sE };
+        const range = fmt(sS) + ' → ' + fmt(sE);
+        const ids = [...new Set(others.map(b => b.member))];
+        const notified = ids.map(mid => ({ name: MB[mid].name, msg: `Hare Krishna ${MB[mid].name}. ${me.name} has also blocked Shri Ji Kunj for ${range}. ${nb.guest} (${nb.count} ${nb.count > 1 ? 'people' : 'person'}) will be joining your stay.` }));
+        this.save([...B, nb], { sheet: { type: 'done', id, notified, fresh: true }, selecting: false, selStart: null, selEnd: null, copied: false });
+      },
+      hasToast: !!st.toast, toast: st.toast,
+      gId: gb ? gb.id : '', onGuestSelect: e => set({ gId: e.target.value, gTab: 'stay' }),
+      guestOptions: B.slice().sort((a, b) => a.start < b.start ? -1 : 1).map(b => ({ id: b.id, label: b.guest + ' · ' + fmt(b.start) })),
+      gIsStay: st.gTab === 'stay' && !!gb, gGuest: gb ? gb.guest : '', gRange: gb ? fmt(gb.start) + ' → ' + fmt(gb.end) : '',
+      gNights: gb ? nightsOf(gb.start, gb.end) : '', gCount: gb ? gb.count : '', gHost: gb ? MB[gb.member].name : '', gSharing: st.gTab === 'stay' ? gShare : [],
+      gHasTitle: st.gTab !== 'stay', gTitle: gTitles[st.gTab] || '', gTab: st.gTab,
+      gTabs: gTabsDef.map(([k, l]) => ({ label: l, onClick: () => set({ gTab: k }), color: st.gTab === k ? 'var(--emerald)' : 'var(--ink-3)', bar: st.gTab === k ? 'var(--emerald)' : 'transparent' })),
+    };
+  }
+}
+</script>
+</body>
+</html>

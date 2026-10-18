@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet><link rel="stylesheet" href="colors_and_type.css"></helmet>
+<div style="display:flex;flex-direction:column;gap:14px;font-family:var(--font-sans);color:var(--ink)">
+<sc-if value="{{ isStay }}" hint-placeholder-val="{{ true }}">
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:16px;display:flex;flex-direction:column;gap:12px">
+    <div style="font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)">Address</div>
+    <div style="font-size:15px;line-height:1.55">
+      <div style="font-family:var(--font-serif);font-size:19px;font-weight:600;margin-bottom:4px">Shri Ji Kunj</div>
+      <div>Ashok Gupta</div><div>F 11 -103</div><div>1 ST FLOOR,</div><div>GOVERDHAN KUNJ</div><div>GOVERDHAN ECO VILLAGE</div><div>WADA</div><div>PALGHAR 421303</div>
+    </div>
+    <div style="display:flex;gap:8px">
+      <button onClick="{{ copyAddr }}" style="flex:1;height:44px;border-radius:var(--r-md);border:1px solid var(--border-strong);background:var(--surface-2);font:600 14px var(--font-sans);color:var(--ink);cursor:pointer">{{ copyLabel }}</button>
+      <a href="https://www.google.com/maps/dir/?api=1&amp;destination=Govardhan+Eco+Village+Wada+Palghar" target="_blank" style="flex:1;height:44px;border-radius:var(--r-md);background:var(--emerald);color:#fff;font:600 14px var(--font-sans);display:flex;align-items:center;justify-content:center;text-decoration:none">Get directions</a>
+    </div>
+  </div>
+  <div style="background:var(--amber-soft);border:1px solid var(--amber);border-radius:var(--r-lg);padding:16px;display:flex;flex-direction:column;gap:10px">
+    <div style="font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--amber)">Wrist band compulsory</div>
+    <div style="font-size:15px;line-height:1.5;color:var(--ink)">Beyond Main temple entry, Wrist Band is compulsory for each person which is avaialble free of cost @ Reception.</div>
+    <div style="font-size:14px;color:var(--ink-2)">For house access its not required.</div>
+    <div style="font-size:14px;color:var(--ink-2)">At reception, please tell them we are guest of</div>
+    <div style="background:var(--surface-2);border-radius:var(--r-md);padding:10px 12px;font-size:15px;line-height:1.45"><div style="font-weight:600">Mr ashok Gupta</div><div style="font-family:var(--font-mono);font-size:14px">F11-103, goverdhan kunj</div></div>
+  </div>
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:6px 16px">
+    <div style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--divider)">
+      <div style="flex:1;display:flex;flex-direction:column;gap:2px"><span style="font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)">Main door lock</span><span style="font:600 22px var(--font-mono);letter-spacing:.08em">654321#</span></div>
+      <button onClick="{{ copyLock }}" style="height:38px;padding:0 14px;border-radius:var(--r-sm);border:1px solid var(--border-strong);background:var(--surface-2);font:600 13px var(--font-sans);color:var(--ink);cursor:pointer">{{ lockLabel }}</button>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--divider)">
+      <div style="flex:1;display:flex;flex-direction:column;gap:2px"><span style="font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)">Wi-Fi network</span><span style="font:500 16px var(--font-mono)">arunguptaf11</span></div>
+      <button onClick="{{ copyNet }}" style="height:38px;padding:0 14px;border-radius:var(--r-sm);border:1px solid var(--border-strong);background:var(--surface-2);font:600 13px var(--font-sans);color:var(--ink);cursor:pointer">{{ netLabel }}</button>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px;padding:12px 0">
+      <div style="flex:1;display:flex;flex-direction:column;gap:2px"><span style="font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)">Wi-Fi password</span><span style="font:500 16px var(--font-mono)">arungupta01</span></div>
+      <button onClick="{{ copyPass }}" style="height:38px;padding:0 14px;border-radius:var(--r-sm);border:1px solid var(--border-strong);background:var(--surface-2);font:600 13px var(--font-sans);color:var(--ink);cursor:pointer">{{ passLabel }}</button>
+    </div>
+  </div>
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:16px;display:flex;flex-direction:column;gap:10px">
+    <div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)">Housekeeping</span><span style="font:600 16px var(--font-mono);color:var(--emerald)">11:00 AM daily</span></div>
+    <div style="font-size:15px;line-height:1.5">The cleaning staff will come everyday in the morning at 11.00 AM. if you wish to change the timing , please contact Anuj Prabhu <a href="tel:+917710065480" style="font-family:var(--font-mono);white-space:nowrap">+91 7710065480</a>.</div>
+    <div style="font-size:14px;color:var(--ink-2);line-height:1.45">The cleaning Staff have their own access codes of the main door</div>
+  </div>
+  <div style="border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;background:var(--paper-2)">
+    <iframe src="https://maps.google.com/maps?q=Govardhan%20Eco%20Village%2C%20Wada%2C%20Palghar&amp;z=14&amp;output=embed" style="display:block;width:100%;height:210px;border:0" loading="lazy"></iframe>
+    <div style="padding:10px 14px;font-size:13px;color:var(--ink-3)">Goverdhan Eco Village · Galtare, Wada, Palghar</div>
+  </div>
+</sc-if>
+<sc-if value="{{ isTemple }}" hint-placeholder-val="{{ false }}">
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:6px 16px 10px">
+    <div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--divider)"><span>Mangala Arati</span><span style="font-family:var(--font-mono);font-size:14px">4:30 AM</span></div>
+    <div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--divider)"><span>Tulasi Puja</span><span style="font-family:var(--font-mono);font-size:14px">5:00 AM</span></div>
+    <div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--divider)"><span>Shringar Darshan</span><span style="font-family:var(--font-mono);font-size:14px">7:15 AM</span></div>
+    <div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--divider)"><span>Guru Puja</span><span style="font-family:var(--font-mono);font-size:14px">7:30 AM</span></div>
+    <div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--divider)"><span>Bhagavatam class</span><span style="font-family:var(--font-mono);font-size:14px">8:00 AM</span></div>
+    <div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--divider)"><span>Raj Bhog Arati</span><span style="font-family:var(--font-mono);font-size:14px">12:30 PM</span></div>
+    <div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--divider);color:var(--ink-3)"><span>Temple closed</span><span style="font-family:var(--font-mono);font-size:14px">1:00–4:00 PM</span></div>
+    <div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--divider)"><span>Dhoop Arati</span><span style="font-family:var(--font-mono);font-size:14px">4:15 PM</span></div>
+    <div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--divider)"><span>Sandhya Gaura Arati</span><span style="font-family:var(--font-mono);font-size:14px">7:00 PM</span></div>
+    <div style="display:flex;justify-content:space-between;padding:12px 0"><span>Shayan Arati</span><span style="font-family:var(--font-mono);font-size:14px">8:30 PM</span></div>
+  </div>
+  <div style="font-size:13px;color:var(--ink-3);line-height:1.5;padding:0 4px">Sri Sri Radha Vrindavanbihari Mandir. Timings change on festival days — please check at the temple desk.</div>
+</sc-if>
+<sc-if value="{{ isExplore }}" hint-placeholder-val="{{ false }}">
+  <a href="gev-village-map.jpg" target="_blank" style="display:block;border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;background:var(--surface);text-decoration:none;color:var(--ink)">
+    <img src="gev-village-map.jpg" alt="Vrindavana forest map of Govardhan Eco Village" style="display:block;width:100%;height:auto">
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px"><span style="font-weight:600;font-size:14px">Village map · important places</span><span style="font-size:13px;color:var(--emerald);font-weight:600">Open full size ↗</span></div>
+  </a>
+  <div style="display:flex;flex-direction:column;gap:10px">
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:14px 16px"><div style="font-weight:600">Temple darshan &amp; kirtan</div><div style="font-size:14px;color:var(--ink-2);margin-top:2px">Morning programme and evening arati at the main mandir.</div></div>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:14px 16px"><div style="font-weight:600">Govardhan Hill parikrama</div><div style="font-size:14px;color:var(--ink-2);margin-top:2px">Walk the parikrama path around the hill replica.</div></div>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:14px 16px"><div style="font-weight:600">Goshala</div><div style="font-size:14px;color:var(--ink-2);margin-top:2px">Visit and serve the cows.</div></div>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:14px 16px"><div style="font-weight:600">Organic farm walk</div><div style="font-size:14px;color:var(--ink-2);margin-top:2px">See the eco farming and water conservation work.</div></div>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:14px 16px"><div style="font-weight:600">Kunds &amp; ghats</div><div style="font-size:14px;color:var(--ink-2);margin-top:2px">Quiet evenings by the water.</div></div>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:14px 16px"><div style="font-weight:600">Prasadam</div><div style="font-size:14px;color:var(--ink-2);margin-top:2px">Take prasadam at the village restaurant.</div>
+      <div style="display:grid;grid-template-columns:20px 1fr;gap:8px;font-size:14px;line-height:1.4;margin-top:10px;padding-top:10px;border-top:1px solid var(--divider)">
+        <span style="font-family:var(--font-mono);color:var(--emerald)">1</span><span><span style="font-weight:600">Shrinath Ji Cafe</span> <span style="color:var(--ink-3)">( Fast food)</span></span>
+        <span style="font-family:var(--font-mono);color:var(--emerald)">2</span><span><span style="font-weight:600">Govindas Restaurant</span> <span style="color:var(--ink-3)">( Asian, Indian, mix Cuisines)</span></span>
+        <span style="font-family:var(--font-mono);color:var(--emerald)">3</span><span><span style="font-weight:600">Ayurveda Center</span> <span style="color:var(--ink-3)">( Gluten Free, Vegan options)</span></span>
+      </div></div>
+  </div>
+</sc-if>
+<sc-if value="{{ isEbike }}" hint-placeholder-val="{{ false }}">
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:16px;display:flex;flex-direction:column;gap:12px">
+    <div style="display:flex;align-items:baseline;gap:10px"><span style="font:600 14px var(--font-mono);color:var(--emerald)">1</span><span style="font-family:var(--font-serif);font-size:20px;font-weight:600">Golf cart</span></div>
+    <div style="display:flex;gap:8px"><a href="tel:+919226516915" style="flex:1;height:46px;border-radius:var(--r-md);background:var(--emerald);color:#fff;font:600 14px var(--font-mono);display:flex;align-items:center;justify-content:center;text-decoration:none">92265 16915</a><a href="tel:+919022762189" style="flex:1;height:46px;border-radius:var(--r-md);background:var(--emerald);color:#fff;font:600 14px var(--font-mono);display:flex;align-items:center;justify-content:center;text-decoration:none">90227 62189</a></div>
+    <div style="font-size:14px;color:var(--ink-2);line-height:1.45">Golf Cart will pick up From Shrinath JI cafe ( opp Main Temple)</div>
+  </div>
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:16px;display:flex;flex-direction:column;gap:12px">
+    <div style="display:flex;align-items:baseline;gap:10px"><span style="font:600 14px var(--font-mono);color:var(--emerald)">2</span><span style="font-family:var(--font-serif);font-size:20px;font-weight:600">Cycles</span></div>
+    <div style="display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font-size:15px"><span style="font-weight:600">Rockrider</span><span style="color:var(--ink-2)">( Adult Geared Cycle )</span><span style="font-weight:600">Riverside</span><span style="color:var(--ink-2)">( Children Cycle )</span></div>
+  </div>
+  <div style="padding:8px 4px 0">
+    <div style="display:flex;align-items:baseline;gap:10px"><span style="font:600 14px var(--font-mono);color:var(--emerald)">3</span><span style="font-family:var(--font-serif);font-size:20px;font-weight:600">E bike ( Satyaki ) for Adults</span></div>
+  </div>
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:16px;display:flex;flex-direction:column;gap:12px">
+    <div style="font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)">Riding</div>
+    <div style="display:grid;grid-template-columns:24px 1fr;gap:10px;font-size:15px;line-height:1.45">
+      <span style="font-family:var(--font-mono);color:var(--emerald);font-weight:500">1</span><span>Take the key from the key holder in the flat.</span>
+      <span style="font-family:var(--font-mono);color:var(--emerald);font-weight:500">2</span><span>Turn the key to ON and check the battery indicator.</span>
+      <span style="font-family:var(--font-mono);color:var(--emerald);font-weight:500">3</span><span>Ride slowly on village paths. Give way to walkers and cows.</span>
+      <span style="font-family:var(--font-mono);color:var(--emerald);font-weight:500">4</span><span>You can Take the Ebike in the lift and park outside the Flat</span>
+      <span style="font-family:var(--font-mono);color:var(--emerald);font-weight:500">5</span><span>the Ebike can be charged at the plug point next to the shoe stand ( Switch is located in the kitchen )</span>
+    </div>
+  </div>
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:16px;display:flex;flex-direction:column;gap:12px">
+    <div style="font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)">Charging</div>
+    <div style="display:grid;grid-template-columns:24px 1fr;gap:10px;font-size:15px;line-height:1.45">
+      <span style="font-family:var(--font-mono);color:var(--emerald);font-weight:500">1</span><span>Connect the charger to the bike first, then to the wall socket.</span>
+      <span style="font-family:var(--font-mono);color:var(--emerald);font-weight:500">2</span><span>Charge when the battery shows one bar or less.</span>
+      <span style="font-family:var(--font-mono);color:var(--emerald);font-weight:500">3</span><span>Unplug when the charger light turns green.</span>
+    </div>
+  </div>
+  <div style="font-size:13px;color:var(--amber);background:var(--amber-soft);border-radius:var(--r-md);padding:10px 12px">Draft steps — family to confirm key location and charger details.</div>
+</sc-if>
+<sc-if value="{{ isCheckout }}" hint-placeholder-val="{{ false }}">
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:16px;display:flex;flex-direction:column;gap:12px">
+    <div style="font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)">Check-out instructions</div>
+    <div style="display:grid;grid-template-columns:24px 1fr;gap:10px;font-size:15px;line-height:1.45">
+      <span style="font-family:var(--font-mono);color:var(--emerald);font-weight:500">1</span><span>used towels please leave on the floor, housekeeping will wash them</span>
+      <span style="font-family:var(--font-mono);color:var(--emerald);font-weight:500">2</span><span>please leave e-bike in balcony</span>
+      <span style="font-family:var(--font-mono);color:var(--emerald);font-weight:500">3</span><span>Please Keep both cycles ( Rockrider &amp; Riverside ) inside the Balcony Area.</span>
+      <span style="font-family:var(--font-mono);color:var(--ruby);font-weight:600">4</span><span style="background:var(--ruby-soft);color:var(--ink);border-radius:var(--r-sm);padding:6px 8px;margin:-6px 0">Please <strong style="color:var(--ruby)">DONOT</strong> switch <strong style="color:var(--ruby)">OFF</strong> main power otherwise CCTV will <strong style="color:var(--ruby)">STOP</strong>, we dont want that , right ?</span>
+      <span style="font-family:var(--font-mono);color:var(--emerald);font-weight:500">5</span><span>Please check all taps are off and the light &amp; Ac switches are off</span>
+    </div>
+  </div>
+</sc-if>
+<sc-if value="{{ isSos }}" hint-placeholder-val="{{ false }}">
+  <div style="background:var(--ruby-soft);border:1px solid var(--ruby);border-radius:var(--r-lg);padding:16px;display:flex;flex-direction:column;gap:12px">
+    <div style="font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ruby)">Emergency contact</div>
+    <div><div style="font-family:var(--font-serif);font-size:22px;font-weight:600">Anuj prabhu</div><div style="font-family:var(--font-mono);font-size:16px;margin-top:2px">77100 65480</div></div>
+    <div style="display:flex;gap:8px">
+      <a href="tel:+917710065480" style="flex:1;height:48px;border-radius:var(--r-md);background:var(--ruby);color:#fff;font:600 15px var(--font-sans);display:flex;align-items:center;justify-content:center;text-decoration:none">Call</a>
+      <a href="https://wa.me/917710065480" target="_blank" style="flex:1;height:48px;border-radius:var(--r-md);background:var(--surface-2);border:1px solid var(--ruby);color:var(--ruby);font:600 15px var(--font-sans);display:flex;align-items:center;justify-content:center;text-decoration:none">WhatsApp</a>
+    </div>
+  </div>
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:4px 16px">
+    <a href="tel:112" style="display:flex;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--divider);color:var(--ink);text-decoration:none"><span>National emergency</span><span style="font-family:var(--font-mono)">112</span></a>
+    <a href="tel:108" style="display:flex;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--divider);color:var(--ink);text-decoration:none"><span>Ambulance</span><span style="font-family:var(--font-mono)">108</span></a>
+    <div style="display:flex;justify-content:space-between;padding:14px 0;color:var(--ink-3)"><span>GEV reception</span><span>number to add</span></div>
+  </div>
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:16px;display:flex;flex-direction:column;gap:12px">
+    <div style="font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)">Emergency medicines</div>
+    <div style="font-size:14px;color:var(--ink-2);line-height:1.45">incase Emergency medicines required which are not at gev:<br>please contact medical store :</div>
+    <div><div style="font-family:var(--font-serif);font-size:20px;font-weight:600">Abdullah Medical</div><div style="font-size:14px;color:var(--ink-3)">Ten Naka</div><div style="font-family:var(--font-mono);font-size:16px;margin-top:4px">+91 82080 83327</div></div>
+    <div style="display:flex;gap:8px">
+      <a href="tel:+918208083327" style="flex:1;height:46px;border-radius:var(--r-md);background:var(--emerald);color:#fff;font:600 15px var(--font-sans);display:flex;align-items:center;justify-content:center;text-decoration:none">Call</a>
+      <a href="https://wa.me/918208083327" target="_blank" style="flex:1;height:46px;border-radius:var(--r-md);background:var(--surface-2);border:1px solid var(--emerald);color:var(--emerald);font:600 15px var(--font-sans);display:flex;align-items:center;justify-content:center;text-decoration:none">WhatsApp</a>
+    </div>
+    <div style="font-size:14px;line-height:1.45;background:var(--amber-soft);border-radius:var(--r-md);padding:10px 12px;color:var(--ink)">Request him to deliver by Auto , it will still take 30 minutes<br>This is the fastest as of now.</div>
+  </div>
+</sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:360,&quot;height&quot;:700},&quot;section&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;stay&quot;,&quot;temple&quot;,&quot;explore&quot;,&quot;ebike&quot;,&quot;sos&quot;],&quot;default&quot;:&quot;stay&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+class Component extends DCLogic {
+  state = { copied: false };
+  cp(k, t) { try { navigator.clipboard.writeText(t); } catch (e) {} this.setState({ c: k }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ c: null }), 1800); }
+  renderVals() {
+    const s = this.props.section || 'stay';
+    return {
+      isStay: s === 'stay', isTemple: s === 'temple', isExplore: s === 'explore', isEbike: s === 'ebike', isSos: s === 'sos', isCheckout: s === 'checkout',
+      copyLabel: this.state.copied ? 'Copied' : 'Copy address',
+      lockLabel: this.state.c === 'lock' ? 'Copied' : 'Copy',
+      netLabel: this.state.c === 'net' ? 'Copied' : 'Copy',
+      passLabel: this.state.c === 'pass' ? 'Copied' : 'Copy',
+      copyLock: () => this.cp('lock', '654321#'),
+      copyNet: () => this.cp('net', 'arunguptaf11'),
+      copyPass: () => this.cp('pass', 'arungupta01'),
+      copyAddr: () => {
+        const t = 'Ashok Gupta\nF 11 -103\n1 ST FLOOR,\nGOVERDHAN KUNJ\nGOVERDHAN ECO VILLAGE\nWADA\nPALGHAR 421303';
+        try { navigator.clipboard.writeText(t); } catch (e) {}
+        this.setState({ copied: true }); setTimeout(() => this.setState({ copied: false }), 1800);
+      }
+    };
+  }
+}
+</script>
+</body>
+</html>
