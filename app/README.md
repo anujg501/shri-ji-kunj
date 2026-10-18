@@ -29,33 +29,39 @@ Once it is live, family members open the address on their phone and choose **Add
 ## Where things live
 
 - `src/components/StayInfo.tsx` holds every guest-facing text: address, door code, Wi-Fi, darshan times, transport, check-out and emergency contacts. Edit text here.
-- `src/data/model.ts` holds the six family members, their colours, and the phone numbers linked to them (`KNOWN_PHONES`).
-- `src/data/store.ts` holds the bookings store. It is the only place to change when connecting a server.
-- `src/data/links.ts` builds guest links and WhatsApp messages.
+- `src/data/model.ts` holds the six family members: names, colours and mobile numbers.
+- `src/data/store.ts` is the only file that talks to the database, covering bookings, sign-in and guest lookups.
+- `src/config.ts` holds the database address and key.
+- `supabase/schema.sql` creates the database tables and security rules.
 
-## What is real and what is simulated
+## Database and sign-in
+
+The app uses the **GRA Moissanite Supabase project**, on purpose: the family reuses its working SMS sign-in, which already has TRAI DLT approval. Everything the family uses lives in separate tables named `sjk_…`. Nothing belonging to GRA is changed or read.
+
+- Only the six family numbers can sign in or see bookings.
+- Each member can add stays under their own name and remove only their own.
+- Guests aren't signed in. A guest link can read only its own stay, without any phone numbers.
+
+**One-time setup:** open Supabase → **SQL Editor** → **New query**, paste all of `supabase/schema.sql`, and click **Run**. Run it again whenever a family member's number changes; it is safe to run more than once.
+
+The SMS code is 6 digits, because the length is a project-wide setting shared with GRA. It reads "Dear Customer Your Login otp is …", which is the approved DLT template wording.
+
+**Test mode:** `VITE_LOCAL_MODE=1 npm run dev` keeps everything in the browser and accepts any 4-digit code. It is for design work only.
+
+## What works
 
 | Feature | Status |
 |---|---|
-| Calendar, blocking and unblocking, overlap warning | ✅ Works on the device it is used on |
-| Guest link | ✅ Works on the guest's own phone. The stay details are packed into the link, and the guest's mobile number is left out. |
-| "Send on WhatsApp" to guest | ✅ Opens WhatsApp with the message ready to send |
-| **Shared calendar across family phones** | ⚠️ Not yet. Bookings are saved on each phone separately until a server is connected. |
-| OTP by SMS | ⚠️ Simulated: any 4 digits work |
-| WhatsApp alert to the other member on overlap | ✅ One tap opens WhatsApp with the message ready. Add members' numbers to `WHATSAPP` in `model.ts`; without a number, WhatsApp asks who to send it to. |
-
-### Next step: make the calendar shared
-
-Connect `src/data/store.ts` to a hosted database such as **Supabase** (free tier, Postgres with realtime updates and phone OTP built in) or **Firebase**:
-
-1. Create a `bookings` table with the fields from the `Booking` type in `model.ts`.
-2. In `store.ts`, load bookings from the table and subscribe to realtime changes, instead of using `localStorage`.
-3. Turn on Supabase phone sign-in, with an SMS provider such as Twilio or MSG91, to replace the simulated OTP.
+| Shared calendar, live on every family phone | ✅ |
+| SMS sign-in, family numbers only | ✅ |
+| Blocking and unblocking, overlap warning | ✅ |
+| Guest link | ✅ Works on the guest's own phone. It stops working once the stay is unblocked. |
+| "Send on WhatsApp" to the guest | ✅ Opens WhatsApp with the message ready |
+| WhatsApp alert to the other member on overlap | ✅ One tap opens WhatsApp to that member with the message ready |
 
 ## Content still to confirm (from the design chat)
 
 - Darshan timings are drafts.
 - The e-bike charging card still has the designer's draft steps.
 - The GEV reception number is missing.
-- Family members' WhatsApp numbers (only Anuj prabhu's is set) for overlap alerts.
 - The door code is visible to anyone who has a guest link. Update `StayInfo.tsx` whenever the code changes.

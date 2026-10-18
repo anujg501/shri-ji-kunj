@@ -5,7 +5,7 @@ import FamilyApp from './family/FamilyApp';
 import GuestApp from './guest/GuestApp';
 import Preview from './Preview';
 import { Phone } from './components/Phone';
-import { useBookings } from './data/store';
+import { lookupGuestStay, useBookings, type GuestLookup } from './data/store';
 import { decodeStay } from './data/links';
 
 // Hash routes, so the app works on any static host without server config:
@@ -22,12 +22,14 @@ function useHash() {
   return h.replace(/^#/, '') || '/';
 }
 
+// The link carries the stay itself, so it shows at once (and offline); the live
+// database then confirms it, adds who else is staying, or reports it was removed.
 function GuestRoute({ id, d }: { id: string; d: string | null }) {
   const B = useBookings();
-  const local = B.find(b => b.id === id);
-  const stay = local ?? decodeStay(id, d);
-  useEffect(() => { document.title = 'Shri Ji Kunj · Your stay'; }, []);
-  return <div className="shell"><Phone><GuestApp stay={stay} all={B} /></Phone></div>;
+  const [live, setLive] = useState<GuestLookup | null>(null);
+  useEffect(() => { document.title = 'Shri Ji Kunj · Your stay'; lookupGuestStay(id).then(setLive); }, [id]);
+  const stay = live ? live.stay : B.find(b => b.id === id) ?? decodeStay(id, d);
+  return <div className="shell"><Phone><GuestApp stay={stay} all={live ? live.others : B} /></Phone></div>;
 }
 
 function App() {

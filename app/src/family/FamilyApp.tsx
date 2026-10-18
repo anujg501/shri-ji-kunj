@@ -1,14 +1,14 @@
 // Family side: shared calendar, My stays, Stay info, plus the bottom sheets for
 // viewing a day, blocking dates and sharing the guest link.
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Calendar, { MonthStays, type LabelMode } from './Calendar';
 import SignIn from './SignIn';
 import StayInfo, { type Section } from '../components/StayInfo';
 import { AppHeader, useToast } from '../components/Phone';
-import { bookingStore, session, useBookings } from '../data/store';
+import { auth, bookingStore, useBookings } from '../data/store';
 import { copyText, guestLink, guestWhatsApp, whatsAppTo } from '../data/links';
-import { byStart, DOW, fmt, fmtPhone, MB, newId, nightsOf, overlap, parse, people, stayText, today, WHATSAPP, type Booking, type MemberId } from '../data/model';
+import { byStart, DOW, fmt, fmtPhone, MB, newId, nightsOf, overlap, parse, people, stayText, today, type Booking, type MemberId } from '../data/model';
 
 type Tab = 'cal' | 'mine' | 'info';
 interface Notice { member: MemberId; name: string; msg: string }
@@ -28,7 +28,8 @@ interface Props {
 export default function FamilyApp({ labels, onPreviewGuest }: Props) {
   const B = useBookings();
   const [toast, toastNode] = useToast();
-  const [me, setMe] = useState<MemberId | null>(() => (session.get()?.member as MemberId) ?? null);
+  // undefined while checking whether this phone is already signed in
+  const [me, setMe] = useState<MemberId | null | undefined>(undefined);
   const [tab, setTab] = useState<Tab>('cal');
   const [infoSec, setInfoSec] = useState<Section>('stay');
   const [ym, setYm] = useState<[number, number]>(() => [new Date().getFullYear(), new Date().getMonth()]);
@@ -40,10 +41,15 @@ export default function FamilyApp({ labels, onPreviewGuest }: Props) {
   const [touched, setTouched] = useState(false);
   const [copied, setCopied] = useState(false);
   const [confirmDel, setConfirmDel] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
 
+  useEffect(() => { auth.restore().then(setMe); }, []);
+  useEffect(() => (me ? bookingStore.start(toast) : undefined), [me]);
+
+  if (me === undefined) return <div className="col" style={{ flex: 1, alignItems: 'center', justifyContent: 'center', color: 'var(--ink-3)' }}>Loading…</div>;
   if (!me || !MB[me]) {
     return <>
-      <SignIn toast={toast} onDone={(phone, member) => { session.set({ phone, member }); setMe(member); setTab('cal'); }} />
+      <SignIn toast={toast} onDone={member => { auth.remember(member); setMe(member); setTab('cal'); toast('Hare Krishna, ' + MB[member].name); }} />
       {toastNode}
     </>;
   }
@@ -54,7 +60,7 @@ export default function FamilyApp({ labels, onPreviewGuest }: Props) {
   const openDone = (id: string, notified: Notice[] = []) => { setSheet({ type: 'done', id, notified }); setCopied(false); setSelecting(false); };
   const startBlock = (from: string | null = null) => { setTab('cal'); setSelecting(true); setSS(from); setSE(null); setSheet(null); };
   const cancelSel = () => { setSelecting(false); setSS(null); setSE(null); };
-  const signOut = () => { session.set(null); setMe(null); setSheet(null); setSelecting(false); };
+  const signOut = () => { auth.signOut(); setMe(null); setSheet(null); setSelecting(false); };
 
   const onDay = (d: string) => {
     if (!selecting) return openDay(d);
@@ -66,15 +72,18 @@ export default function FamilyApp({ labels, onPreviewGuest }: Props) {
   const others = sS && sE ? B.filter(b => b.member !== me && overlap(b, sS, sE)) : [];
   const phoneOk = /^\d{10}$/.test(form.phone), guestOk = form.guest.trim().length > 0;
 
-  const confirm = () => {
+  const confirm = async () => {
     if (!(guestOk && phoneOk) || !sS || !sE) return setTouched(true);
+    if (saving) return;
     const nb: Booking = { id: newId(), member: me, guest: form.guest.trim(), phone: form.phone, count: form.count, start: sS, end: sE };
     const range = fmt(sS) + ' → ' + fmt(sE);
     const notified = [...new Set(others.map(b => b.member))].map(mid => ({
       member: mid, name: MB[mid].name,
       msg: `Hare Krishna ${MB[mid].name}. ${meM.name} has also blocked Shri Ji Kunj for ${range}. ${nb.guest} (${people(nb.count)}) will be joining your stay.`,
     }));
-    bookingStore.addBooking(nb);
+    setSaving(true);
+    try { await bookingStore.addBooking(nb); } catch { setSaving(false); return toast("Couldn't save. Check your internet and try again."); }
+    setSaving(false);
     setSheet({ type: 'done', id: nb.id, notified, fresh: true });
     setSelecting(false); setSS(null); setSE(null); setCopied(false);
   };
@@ -206,7 +215,8 @@ export default function FamilyApp({ labels, onPreviewGuest }: Props) {
                   <button onClick={() => openDone(b.id)} style={btn({ flex: 1, border: 0, background: 'var(--emerald)', color: '#fff' })}>Guest link</button>
                   <button onClick={() => {
                     if (!conf) return setConfirmDel(b.id);
-                    bookingStore.remove(b.id); setConfirmDel(null); toast('Dates released — now available to everyone');
+                    setConfirmDel(null);
+                    bookingStore.remove(b.id).then(() => toast('Dates released — now available to everyone'), () => toast("Couldn't unblock. Check your internet and try again."));
                   }} style={btn({ flex: 1, border: '1px solid var(--ruby)', background: conf ? 'var(--ruby)' : 'var(--surface-2)', color: conf ? '#fff' : 'var(--ruby)' })}>{conf ? 'Tap to confirm' : 'Unblock'}</button>
                 </div>
               )}
@@ -254,7 +264,7 @@ export default function FamilyApp({ labels, onPreviewGuest }: Props) {
           </div>
         </div>
         {touched && !(guestOk && phoneOk) && <div style={{ fontSize: 13, color: 'var(--ruby)' }}>Add the guest's name and a 10-digit mobile number.</div>}
-        <button type="submit" style={primaryBtn(54)}>Confirm &amp; block</button>
+        <button type="submit" style={{ ...primaryBtn(54), opacity: saving ? 0.6 : 1 }}>{saving ? 'Saving…' : 'Confirm & block'}</button>
         <button type="button" onClick={() => setSheet(null)} style={{ height: 40, border: 0, background: 'none', color: 'var(--ink-2)', fontWeight: 600, fontSize: 14, cursor: 'pointer' }}>Change dates</button>
       </form>
     );
@@ -290,7 +300,7 @@ export default function FamilyApp({ labels, onPreviewGuest }: Props) {
           <div key={n.name} className="col" style={{ gap: 6, borderTop: '1px solid var(--divider)', paddingTop: 12 }}>
             <span className="eyebrow">Let {n.name} know</span>
             <div style={{ alignSelf: 'flex-start', maxWidth: '92%', background: 'var(--emerald-soft)', borderRadius: '4px 14px 14px 14px', padding: '10px 12px', fontSize: 14, lineHeight: 1.45 }}>{n.msg}</div>
-            <a href={whatsAppTo(WHATSAPP[n.member], n.msg)} target="_blank" rel="noreferrer" className="btn" style={{ height: 46, fontSize: 15, background: 'var(--surface-2)', border: '1px solid var(--emerald)', color: 'var(--emerald)' }}>Send to {n.name} on WhatsApp</a>
+            <a href={whatsAppTo(MB[n.member].phone, n.msg)} target="_blank" rel="noreferrer" className="btn" style={{ height: 46, fontSize: 15, background: 'var(--surface-2)', border: '1px solid var(--emerald)', color: 'var(--emerald)' }}>Send to {n.name} on WhatsApp</a>
           </div>
         ))}
       </div>

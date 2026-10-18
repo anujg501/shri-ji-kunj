@@ -14,7 +14,7 @@ const softLabel = { fontSize: 11, color: 'var(--emerald-soft)', textTransform: '
 interface Props {
   stay: GuestStay | null;
   /** Other bookings, used to tell the guest who else is staying at the same time. */
-  all: Booking[];
+  all: Pick<Booking, 'id' | 'member' | 'guest' | 'start' | 'end'>[];
   tab?: Section;
   onTab?: (t: Section) => void;
 }
@@ -50,7 +50,7 @@ export default function GuestApp({ stay, all, tab: ctrlTab, onTab }: Props) {
           )}
           {tab === 'stay' && !stay && (
             <div style={{ padding: 16, textAlign: 'center', fontSize: 14, color: 'var(--ink-3)', border: '1px dashed var(--border)', borderRadius: 'var(--r-lg)' }}>
-              This stay link isn't valid any more. Please ask your host for a new one.
+              This stay is no longer booked. Please ask your host for a new link.
             </div>
           )}
           {tab !== 'stay' && <div className="serif" style={{ fontSize: 26, padding: '0 4px' }}>{TITLES[tab]}</div>}
