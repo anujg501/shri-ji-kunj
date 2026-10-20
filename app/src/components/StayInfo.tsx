@@ -108,6 +108,16 @@ function StaySection() {
         <div style={{ fontSize: 14, color: 'var(--ink-2)', lineHeight: 1.45 }}>The cleaning Staff have their own access codes of the main door</div>
       </div>
 
+      <div style={{ background: 'var(--sapphire-soft)', border: '1px solid var(--sapphire)', borderRadius: 'var(--r-lg)', padding: 16, display: 'flex', flexDirection: 'column', gap: 10 }}>
+        <div className="eyebrow" style={{ color: 'var(--sapphire)' }}>Notice to guests · Valuables</div>
+        <div style={{ fontSize: 15, lineHeight: 1.5 }}>
+          We have CCTV only in the hall, so please request you to not leave valuables unattended in your absence.
+        </div>
+        <div style={{ fontSize: 14, color: 'var(--ink-2)', lineHeight: 1.45 }}>
+          If you in emergency cases you can keep it in the cupboard and carry the keys out with you
+        </div>
+      </div>
+
       <div style={{ border: '1px solid var(--border)', borderRadius: 'var(--r-lg)', overflow: 'hidden', background: 'var(--paper-2)' }}>
         <iframe title="Map" src="https://maps.google.com/maps?q=Govardhan%20Eco%20Village%2C%20Wada%2C%20Palghar&z=14&output=embed" style={{ display: 'block', width: '100%', height: 210, border: 0 }} loading="lazy" />
         <div style={{ padding: '10px 14px', fontSize: 13, color: 'var(--ink-3)' }}>Goverdhan Eco Village · Galtare, Wada, Palghar</div>
