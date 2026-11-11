@@ -324,9 +324,11 @@ function GrocerySection() {
           </div>
         </div>
       </div>
-      <div style={{ fontSize: 14, lineHeight: 1.5, background: 'var(--amber-soft)', borderRadius: 'var(--r-md)', padding: '10px 12px', display: 'flex', flexDirection: 'column', gap: 6 }}>
-        <span>We have applied for opening account which provides APP for ordering online, but will start after 15-20 days</span>
-        <span style={{ fontWeight: 600 }}>We can however purchase is cash at the store till then</span>
+      <div className="card" style={cardPad}>
+        <div className="eyebrow">Order online</div>
+        <div style={{ fontSize: 15, lineHeight: 1.5 }}>Grocery and milk can also be ordered online from the RG Seva website.</div>
+        <a href="https://www.rgseva.com" target="_blank" rel="noreferrer" className="btn btn-primary" style={{ height: 48, fontSize: 15 }}>Open www.rgseva.com ↗</a>
+        <div style={{ fontSize: 13, color: 'var(--ink-3)', lineHeight: 1.45 }}>For the login details, please ask your host on WhatsApp.</div>
       </div>
     </>
   );
