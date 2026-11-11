@@ -6,8 +6,8 @@ import { AppHeader } from '../components/Phone';
 import { fmt, MB, nightsOf, overlap, type Booking } from '../data/model';
 import type { GuestStay } from '../data/links';
 
-const TABS: [Section, string][] = [['stay', 'Stay'], ['temple', 'Darshan'], ['explore', 'Explore'], ['ebike', 'Transport'], ['checkout', 'Check-out'], ['sos', 'Help']];
-const TITLES: Partial<Record<Section, string>> = { temple: 'Darshan timings', explore: 'Things to do', ebike: 'Transport within GEV', checkout: 'Check-out instructions', sos: 'Emergency' };
+const TABS: [Section, string][] = [['stay', 'Stay'], ['temple', 'Darshan'], ['explore', 'Explore'], ['ebike', 'Transport'], ['grocery', 'Grocery'], ['checkout', 'Check-out'], ['sos', 'Help']];
+const TITLES: Partial<Record<Section, string>> = { temple: 'Darshan timings', explore: 'Things to do', ebike: 'Transport within GEV', grocery: 'Grocery & milk', checkout: 'Check-out instructions', sos: 'Emergency' };
 
 const softLabel = { fontSize: 11, color: 'var(--emerald-soft)', textTransform: 'uppercase' as const, letterSpacing: '.06em' };
 
@@ -57,7 +57,7 @@ export default function GuestApp({ stay, all, tab: ctrlTab, onTab }: Props) {
           <StayInfo section={tab} />
         </div>
       </div>
-      <nav style={{ flex: 'none', height: 76, borderTop: '1px solid var(--border)', background: 'var(--surface)', display: 'grid', gridTemplateColumns: 'repeat(6,1fr)', padding: '0 4px 14px', boxSizing: 'border-box' }}>
+      <nav style={{ flex: 'none', height: 76, borderTop: '1px solid var(--border)', background: 'var(--surface)', display: 'grid', gridTemplateColumns: `repeat(${TABS.length},1fr)`, padding: '0 2px 14px', boxSizing: 'border-box' }}>
         {TABS.map(([k, l]) => (
           <button key={k} className="tabbtn" onClick={() => setTab(k)} style={{ gap: 5, fontSize: 11, color: tab === k ? 'var(--emerald)' : 'var(--ink-3)' }}>
             <span style={{ width: 22, height: 3, borderRadius: 2, background: tab === k ? 'var(--emerald)' : 'transparent' }} />{l}

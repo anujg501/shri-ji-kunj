@@ -4,7 +4,7 @@
 import { useRef, useState } from 'react';
 import { copyText } from '../data/links';
 
-export type Section = 'stay' | 'temple' | 'explore' | 'ebike' | 'checkout' | 'sos';
+export type Section = 'stay' | 'temple' | 'explore' | 'ebike' | 'grocery' | 'checkout' | 'sos';
 
 const ADDRESS = ['Ashok Gupta', 'F 11 -103', '1 ST FLOOR,', 'GOVERDHAN KUNJ', 'GOVERDHAN ECO VILLAGE', 'WADA', 'PALGHAR 421303'];
 const DOOR_CODE = '654321#';
@@ -298,8 +298,42 @@ function SosSection() {
   );
 }
 
+function GrocerySection() {
+  return (
+    <>
+      <div className="card" style={cardPad}>
+        <div className="eyebrow">Fresh milk &amp; grocery</div>
+        <div style={{ fontSize: 15, lineHeight: 1.5 }}>For fresh milk, grocery etc pls contact</div>
+        <div>
+          <div className="serif" style={{ fontSize: 20 }}>CPD Warehouse</div>
+          <div style={{ fontSize: 14, color: 'var(--ink-3)' }}>[ CENTRAL PURCHASING DEPT ] WAREHOUSE, behind shrinath ji cafe .</div>
+        </div>
+        <div style={{ background: 'var(--surface-2)', borderRadius: 'var(--r-md)', padding: '10px 12px', fontSize: 14, lineHeight: 1.45, color: 'var(--ink-2)' }}>
+          <span style={{ fontWeight: 600, color: 'var(--ink)' }}>How to get there: </span>
+          behind shrinath ji cafe ,there is gift shop, behind that there is a gully going inside, take the first left inside the gully
+        </div>
+        <div style={{ background: 'var(--surface-2)', borderRadius: 'var(--r-md)', padding: '10px 12px', display: 'flex', flexDirection: 'column', gap: 10 }}>
+          <div className="col">
+            <span className="eyebrow" style={{ fontSize: 11 }}>Contact</span>
+            <span style={{ fontWeight: 600 }}>krishna bhakt prabhu</span>
+            <span className="mono" style={{ fontSize: 14 }}>09403120882</span>
+          </div>
+          <div style={{ display: 'flex', gap: 8 }}>
+            <a href="tel:+919403120882" className="btn btn-primary" style={{ flex: 1 }}>Call</a>
+            <a href="https://wa.me/919403120882" target="_blank" rel="noreferrer" className="btn" style={{ flex: 1, background: 'var(--surface-2)', border: '1px solid var(--emerald)', color: 'var(--emerald)' }}>WhatsApp</a>
+          </div>
+        </div>
+      </div>
+      <div style={{ fontSize: 14, lineHeight: 1.5, background: 'var(--amber-soft)', borderRadius: 'var(--r-md)', padding: '10px 12px', display: 'flex', flexDirection: 'column', gap: 6 }}>
+        <span>We have applied for opening account which provides APP for ordering online, but will start after 15-20 days</span>
+        <span style={{ fontWeight: 600 }}>We can however purchase is cash at the store till then</span>
+      </div>
+    </>
+  );
+}
+
 const SECTIONS: Record<Section, () => React.ReactElement> = {
-  stay: StaySection, temple: TempleSection, explore: ExploreSection, ebike: TransportSection, checkout: CheckoutSection, sos: SosSection,
+  stay: StaySection, temple: TempleSection, explore: ExploreSection, ebike: TransportSection, grocery: GrocerySection, checkout: CheckoutSection, sos: SosSection,
 };
 
 export default function StayInfo({ section }: { section: Section }) {

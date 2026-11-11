@@ -13,7 +13,7 @@ import { byStart, DOW, fmt, fmtPhone, MB, newId, nightsOf, overlap, parse, peopl
 type Tab = 'cal' | 'mine' | 'info';
 type Sheet = { type: 'day'; date: string } | { type: 'form' } | { type: 'done'; id: string; fresh?: boolean } | null;
 
-const INFO: [Section, string][] = [['stay', 'Address & map'], ['temple', 'Darshan'], ['explore', 'Things to do'], ['ebike', 'Transport'], ['checkout', 'Check-out'], ['sos', 'Emergency']];
+const INFO: [Section, string][] = [['stay', 'Address & map'], ['temple', 'Darshan'], ['explore', 'Things to do'], ['ebike', 'Transport'], ['grocery', 'Grocery'], ['checkout', 'Check-out'], ['sos', 'Emergency']];
 const btn = (extra: React.CSSProperties = {}): React.CSSProperties => ({ height: 44, borderRadius: 'var(--r-md)', fontWeight: 600, fontSize: 14, cursor: 'pointer', ...extra });
 const primaryBtn = (h = 52, fs = 16): React.CSSProperties => btn({ height: h, border: 0, background: 'var(--emerald)', color: '#fff', fontSize: fs });
 const label = { fontSize: 13, fontWeight: 600, color: 'var(--ink-2)' };
