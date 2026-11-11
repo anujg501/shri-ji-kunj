@@ -211,6 +211,27 @@ function TransportSection() {
           'Unplug when the charger light turns green.',
         ]} />
       </div>
+      <div className="card" style={cardPad}>
+        <div className="eyebrow">Repair</div>
+        <div style={{ fontSize: 14, color: 'var(--ink-2)' }}>Incase of</div>
+        <div className="steps">
+          <span className="n">1</span>
+          <span>
+            <strong>Flat tyre / puncture</strong> : pls tow the EV / cycle to gate no : 12 BIOTECHNOLOGY PLANT.
+            there is repair garage just behind the plant.
+          </span>
+          <span className="n">2</span>
+          <span><strong>Less air</strong> : pls request at reception to provide air filling machine.</span>
+        </div>
+        <div style={{ background: 'var(--surface-2)', borderRadius: 'var(--r-md)', padding: '10px 12px', display: 'flex', alignItems: 'center', gap: 12 }}>
+          <div className="col" style={{ flex: 1 }}>
+            <span className="eyebrow" style={{ fontSize: 11 }}>Repair garage · Contact</span>
+            <span style={{ fontWeight: 600 }}>Sushil prabhu</span>
+            <span className="mono" style={{ fontSize: 14 }}>08406965431</span>
+          </div>
+          <a href="tel:+918406965431" className="btn btn-primary" style={{ padding: '0 18px' }}>Call</a>
+        </div>
+      </div>
       <div style={{ fontSize: 13, color: 'var(--amber)', background: 'var(--amber-soft)', borderRadius: 'var(--r-md)', padding: '10px 12px' }}>Draft steps — family to confirm key location and charger details.</div>
     </>
   );
