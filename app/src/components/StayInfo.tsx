@@ -10,6 +10,9 @@ const ADDRESS = ['Ashok Gupta', 'F 11 -103', '1 ST FLOOR,', 'GOVERDHAN KUNJ', 'G
 const DOOR_CODE = '654321#';
 const WIFI_NAME = 'arunguptaf11';
 const WIFI_PASS = 'arungupta01';
+// Shown to guests on the Grocery page, by the family's choice. Update here if the password changes.
+const RGSEVA_USER = 'arungupta05@gmail.com';
+const RGSEVA_PASS = 'brijgopal555@';
 
 const DARSHAN: [string, string, boolean?][] = [
   ['Mangala Arati', '4:30 AM'], ['Tulasi Puja', '5:00 AM'], ['Shringar Darshan', '7:15 AM'], ['Guru Puja', '7:30 AM'],
@@ -299,6 +302,7 @@ function SosSection() {
 }
 
 function GrocerySection() {
+  const c = useCopy();
   return (
     <>
       <div className="card" style={cardPad}>
@@ -328,7 +332,17 @@ function GrocerySection() {
         <div className="eyebrow">Order online</div>
         <div style={{ fontSize: 15, lineHeight: 1.5 }}>Grocery and milk can also be ordered online from the RG Seva website.</div>
         <a href="https://www.rgseva.com" target="_blank" rel="noreferrer" className="btn btn-primary" style={{ height: 48, fontSize: 15 }}>Open www.rgseva.com ↗</a>
-        <div style={{ fontSize: 13, color: 'var(--ink-3)', lineHeight: 1.45 }}>For the login details, please ask your host on WhatsApp.</div>
+        <div style={{ background: 'var(--surface-2)', borderRadius: 'var(--r-md)', padding: '2px 12px' }}>
+          {[['user', 'Username', RGSEVA_USER], ['pass', 'Password', RGSEVA_PASS]].map(([k, l, v], i) => (
+            <div key={k} className="row" style={{ gap: 10, padding: '10px 0', borderTop: i ? '1px solid var(--divider)' : 0 }}>
+              <div className="col" style={{ flex: 1, minWidth: 0, gap: 2 }}>
+                <span className="eyebrow" style={{ fontSize: 11 }}>{l}</span>
+                <span className="mono" style={{ fontSize: 14, overflowWrap: 'anywhere' }}>{v}</span>
+              </div>
+              <button className="btn-copy" onClick={() => c.copy(k, v)}>{c.label(k)}</button>
+            </div>
+          ))}
+        </div>
       </div>
     </>
   );
